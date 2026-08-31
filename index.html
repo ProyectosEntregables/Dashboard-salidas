@@ -274,7 +274,7 @@
             { id: "383277", type: "N/A", title: "Migración Novasoft V 6.0.1", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "30/09/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "337681", type: "CAB", title: "Reporte de movilizados (dentro del parámetro de descuento)", frente: "Financiero", area: "PL - InterPay", finishDate: "4/7/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
             { id: "337682", type: "CAB", title: "Reporte de ventas con descuentos", frente: "Financiero", area: "PL - InterPay", finishDate: "4/7/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
-            { id: "382614", type: "ECAB", title: "Reversión de entrega - Interpay", frente: "Financiero", area: "PL - InterPay", finishDate: "22/08/2026", nuevaFecha: "02/09/2026", saleProd: "Programado", comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05" },
+            { id: "382614", type: "ECAB", title: "Reversión de entrega - Interpay", frente: "Financiero", area: "PL - InterPay", finishDate: "22/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05" },
             { id: "384025", type: "ECAB", title: "Mejoras de Interfaz, Copy \"Sigue Tu Envío\" (Pago Anticipado)", frente: "Logístico", area: "PL - Cambios", finishDate: "19/8/2026", nuevaFecha: "28/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Completada" },
             { id: "358165", type: "ECAB", title: "Mejora Cambios: Centro Acopio WPF y Logística Inversa WPF", frente: "Logístico", area: "PL - Cambios", finishDate: "2/8/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB" },
             { id: "383904", type: "N/A", title: "Definiciones de Modelo", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
@@ -282,7 +282,7 @@
             { id: "371364", type: "N/A", title: "Revisión / Actualización Políticas y T&C", frente: "Comercio Electrónico", area: "PL - Comercio Electronico", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "366686", type: "ECAB", title: "MEJORAS INTERAPP R3", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: "" },
             { id: "366688", type: "ECAB", title: "MEJORAS INTERAP R4", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: "" },
-            { id: "371706", type: "CAB", title: "Reversion de entrega - Interapp", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "13/08/2026", nuevaFecha: "02/09/2026", saleProd: "Programado", comentarios: "" },
+            { id: "371706", type: "CAB", title: "Reversion de entrega - Interapp", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "13/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "" },
             { id: "386555", type: "ECAB", title: "Reembolso por pago en casa  - Full", frente: "Financiero", area: "PL - InterPay", finishDate: "31/08/2026", nuevaFecha: "03/09/2026", saleProd: "NO", comentarios: "Se tenía una dependencia con el proveedor de Novasoft" }
         ];
 
@@ -485,14 +485,14 @@
                         area: "PL - InterPay",
                         finishDate: "22/08/2026",
                         nuevaFecha: "02/09/2026",
-                        saleProd: "Programado",
+                        saleProd: "NO",
                         comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05"
                     });
                 } else {
                     item382614.frente = "Financiero";
                     item382614.area = "PL - InterPay";
                     item382614.type = "ECAB";
-                    item382614.saleProd = "Programado";
+                    item382614.saleProd = "NO";
                     item382614.finishDate = "22/08/2026";
                     item382614.nuevaFecha = "02/09/2026";
                     item382614.comentarios = item382614.comentarios || "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05";
@@ -548,14 +548,14 @@
                         area: "PL - Evolución InterApp",
                         finishDate: "13/08/2026",
                         nuevaFecha: "02/09/2026",
-                        saleProd: "Programado",
+                        saleProd: "NO",
                         comentarios: ""
                     });
                 } else {
                     item371706.frente = "Logístico";
                     item371706.area = "PL - Evolución InterApp";
                     item371706.type = "CAB";
-                    item371706.saleProd = "Programado";
+                    item371706.saleProd = "NO";
                     item371706.finishDate = "13/08/2026";
                     item371706.nuevaFecha = "02/09/2026";
                 }
@@ -903,8 +903,21 @@
                 grouped['Logístico']['PL - Evolución InterApp'] = [];
             }
 
+            const customOrder = ["Logístico", "Financiero", "Comercio Electrónico", "Integraciones"];
+            const sortedFrentes = Object.keys(grouped).sort((a, b) => {
+                let idxA = customOrder.indexOf(a);
+                let idxB = customOrder.indexOf(b);
+                if (idxA === -1) idxA = customOrder.findIndex(f => f.toLowerCase() === a.toLowerCase());
+                if (idxB === -1) idxB = customOrder.findIndex(f => f.toLowerCase() === b.toLowerCase());
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                if (idxA !== -1) return -1;
+                if (idxB !== -1) return 1;
+                return a.localeCompare(b);
+            });
+
             let html = '';
-            for (const [frente, areas] of Object.entries(grouped)) {
+            for (const frente of sortedFrentes) {
+                const areas = grouped[frente];
                 const totalInFrente = Object.values(areas).reduce((acc, arr) => acc + arr.length, 0);
                 const isExpanded = state.expandedFrentes[frente] === true;
 

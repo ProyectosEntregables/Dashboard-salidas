@@ -97,7 +97,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-5">
 
         <!-- Top KPI Metric Cards (Interactive Filters) -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-3.5 mb-6">
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-6">
             <!-- Card 1: Entregables Totales -->
             <div id="kpi-card-ALL" onclick="setFilter('ALL')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 hover:shadow-md transition-all select-none group relative">
                 <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
@@ -114,32 +114,53 @@
                 </div>
             </div>
 
-            <!-- Card 2: Salen a Producción -->
-            <div id="kpi-card-PROD" onclick="setFilter('PROD')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-emerald-400 hover:shadow-md transition-all select-none group relative">
+            <!-- Card 2: Salió a Producción (SI) -->
+            <div id="kpi-card-SALIO" onclick="setFilter('SALIO')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-emerald-400 hover:shadow-md transition-all select-none group relative">
                 <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
-                    <span class="tracking-wider uppercase group-hover:text-emerald-600 transition-colors">SALEN A PRODUCCIÓN</span>
+                    <span class="tracking-wider uppercase group-hover:text-emerald-600 transition-colors">SALIÓ A PRODUCCIÓN</span>
                     <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
                 </div>
                 <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-2">
-                    <span id="kpi-prod">20</span> <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" id="kpi-prod-pct">87%</span>
+                    <span id="kpi-salio">10</span> <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" id="kpi-salio-pct">43%</span>
                 </div>
                 <div class="text-[11px] text-emerald-600 mt-1 font-medium flex items-center justify-between">
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-bolt text-xs"></i> <span id="kpi-ecab-count">7 despliegues vía ECAB</span></span>
+                    <span>Estado: SI</span>
                     <span class="text-[10px] text-emerald-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
                 </div>
-                <div id="badge-filter-PROD" class="absolute -top-2.5 right-3 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
+                <div id="badge-filter-SALIO" class="absolute -top-2.5 right-3 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
                     Filtro Activo
                 </div>
             </div>
 
-            <!-- Card 3: No Sale a Producción -->
+            <!-- Card 3: Salen a Producción (Programado) -->
+            <div id="kpi-card-PROD" onclick="setFilter('PROD')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all select-none group relative">
+                <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+                    <span class="tracking-wider uppercase group-hover:text-indigo-600 transition-colors">SALEN A PRODUCCIÓN</span>
+                    <i class="fa-solid fa-clock text-indigo-500 text-sm"></i>
+                </div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-indigo-600 mt-2">
+                    <span id="kpi-prod">9</span> <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200" id="kpi-prod-pct">39%</span>
+                </div>
+                <div class="text-[11px] text-indigo-600 mt-1 font-medium flex items-center justify-between">
+                    <span>Estado: Programado</span>
+                    <span class="text-[10px] text-indigo-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
+                </div>
+                <div id="badge-filter-PROD" class="absolute -top-2.5 right-3 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
+                    Filtro Activo
+                </div>
+            </div>
+
+            <!-- Card 4: No Sale a Producción (NO) -->
             <div id="kpi-card-NO_PROD" onclick="setFilter('NO_PROD')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-rose-400 hover:shadow-md transition-all select-none group relative">
                 <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
                     <span class="tracking-wider uppercase group-hover:text-rose-600 transition-colors">NO SALE A PRODUCCIÓN</span>
                     <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2" id="kpi-desp">3</div>
-                <div class="text-[11px] text-rose-600 mt-1 font-medium flex items-center justify-end">
+                <div class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">
+                    <span id="kpi-desp">4</span> <span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200" id="kpi-desp-pct">17%</span>
+                </div>
+                <div class="text-[11px] text-rose-600 mt-1 font-medium flex items-center justify-between">
+                    <span>Estado: NO</span>
                     <span class="text-[10px] text-rose-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
                 </div>
                 <div id="badge-filter-NO_PROD" class="absolute -top-2.5 right-3 bg-rose-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
@@ -237,31 +258,30 @@
     <script>
         const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1Xza_09EONAlbuMaQ8EdcwxbD1Q0DdY3bwqPX3iWXGx4/gviz/tq?tqx=out:csv";
         
-        // Exact official Google Sheet Dataset matching comments strictly with the file (Without Transversales)
         const GOOGLE_SHEET_DEFAULT_ITEMS = [
             { id: "359755", type: "", title: "Reporte de servicios ágiles", frente: "Logístico", area: "PL - Servicios Ágiles", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "NO", comentarios: "El proyecto de servicios ágiles fue despriorizado, lo que queda para finalizar corresponde a Mejora de Bloques - Servicios Agiles y Buscador de Envíos" },
             { id: "381578", type: "", title: "Módulo de Oficinas Principales en Formularios R1", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "5/9/2026", saleProd: "NO", comentarios: "Bloqueos por ajustes de homologación de datos y cobertura de reglas de negocio offline/online; cuenta con informe técnico." },
-            { id: "386348", type: "ECAB", title: "Estabilización Funcionalidad de Pago Anticipado", frente: "Logístico", area: "PL - Cambios", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "SALIDA POR ECAB" },
-            { id: "384191", type: "ECAB", title: "Estabilización 3", frente: "Integraciones", area: "PL - Portal Clientes", finishDate: "28/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "SALIDA POR ECAB, debido a inclusión de ajuste solicitado por don Norman y finalización de pruebas y estrés" },
-            { id: "392364", type: "ECAB", title: "Optimización de Ingreso RO, Trazabilidad de Entregas y Control de GEO en Armado de Bloques", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
+            { id: "386348", type: "ECAB", title: "Estabilización Funcionalidad de Pago Anticipado", frente: "Logístico", area: "PL - Cambios", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB - Ejecutado con éxito" },
+            { id: "384191", type: "ECAB", title: "Estabilización 3", frente: "Integraciones", area: "PL - Portal Clientes", finishDate: "28/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB, debido a inclusión de ajuste solicitado por don Norman y finalización de pruebas y estrés" },
+            { id: "392364", type: "ECAB", title: "Optimización de Ingreso RO, Trazabilidad de Entregas y Control de GEO en Armado de Bloques", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB: Ejecutado" },
             { id: "378456", type: "", title: "Integración Cambios - Interapp", frente: "Logístico", area: "PL - Cambios", finishDate: "30/8/2026", nuevaFecha: "12/9/2026", saleProd: "NO", comentarios: "Reprogramado para pruebas de integración con Interapp" },
-            { id: "393042", type: "ECAB", title: "Etiqueta - Devolución a remitente desde Logística Inversa", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "30/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
+            { id: "393042", type: "ECAB", title: "Etiqueta - Devolución a remitente desde Logística Inversa", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "30/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB: Despliegue listo" },
             { id: "383897", type: "", title: "Backend / Integración \"Al carrito\"", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "NO", comentarios: "En revisión de la lista de requisitos por Cerquera" },
             { id: "383901", type: "ECAB", title: "IA", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "383902", type: "ECAB", title: "Link RRSS + Whatsaap", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "383903", type: "CAB", title: "Micro Site", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
-            { id: "390493", type: "ECAB", title: "Migración Redis Cloud", frente: "Integraciones", area: "PL - Integraciones", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
-            { id: "336505", type: "ECAB", title: "Optimización Operativa y Visual de Geo Manual", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "4/7/2026", nuevaFecha: "30/8/2026", saleProd: "Programado", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
-            { id: "369818", type: "ECAB", title: "Reversión de Entrega - ControllerApp", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "23/8/2026", nuevaFecha: "30/8/2026", saleProd: "Programado", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
+            { id: "390493", type: "ECAB", title: "Migración Redis Cloud", frente: "Integraciones", area: "PL - Integraciones", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
+            { id: "336505", type: "ECAB", title: "Optimización Operativa y Visual de Geo Manual", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "4/7/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
+            { id: "369818", type: "ECAB", title: "Reversión de Entrega - ControllerApp", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "23/8/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
             { id: "196238", type: "CAB", title: "Cierre diario: Reportes anulaciones Dashboard - anulaciones", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "30/6/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
             { id: "337681", type: "CAB", title: "Reporte de movilizados (dentro del parámetro de descuento)", frente: "Financiero", area: "PL - InterPay", finishDate: "4/7/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
             { id: "337682", type: "CAB", title: "Reporte de ventas con descuentos", frente: "Financiero", area: "PL - InterPay", finishDate: "4/7/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
-            { id: "384025", type: "ECAB", title: "Mejoras de Interfaz, Copy \"Sigue Tu Envío\" (Pago Anticipado)", frente: "Logístico", area: "PL - Cambios", finishDate: "19/8/2026", nuevaFecha: "28/8/2026", saleProd: "Programado", comentarios: "SALIDA POR ECAB" },
-            { id: "358165", type: "ECAB", title: "Mejora Cambios: Centro Acopio WPF y Logística Inversa WPF", frente: "Logístico", area: "PL - Cambios", finishDate: "2/8/2026", nuevaFecha: "30/8/2026", saleProd: "Programado", comentarios: "SALIDA POR ECAB" },
+            { id: "384025", type: "ECAB", title: "Mejoras de Interfaz, Copy \"Sigue Tu Envío\" (Pago Anticipado)", frente: "Logístico", area: "PL - Cambios", finishDate: "19/8/2026", nuevaFecha: "28/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Completada" },
+            { id: "358165", type: "ECAB", title: "Mejora Cambios: Centro Acopio WPF y Logística Inversa WPF", frente: "Logístico", area: "PL - Cambios", finishDate: "2/8/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB" },
             { id: "383904", type: "N/A", title: "Definiciones de Modelo", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "383905", type: "N/A", title: "Proceso de Pago Seller", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "371364", type: "N/A", title: "Revisión / Actualización Políticas y T&C", frente: "Comercio Electrónico", area: "PL - Comercio Electronico", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
-            { id: "390316", type: "", title: "Lista restrictiva débito automático InterPay en portal de clientes", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" }
+            { id: "390316", type: "", title: "Lista restrictiva débito automático InterPay en portal de clientes", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "Despliegue confirmado" }
         ];
 
         let state = {
@@ -270,9 +290,19 @@
             expandedFrentes: {},
             expandedAreas: {},
             expandedItems: {},
-            activeFilter: 'ALL', // 'ALL' | 'PROD' | 'NO_PROD'
+            activeFilter: 'ALL', // 'ALL' | 'SALIO' | 'PROD' | 'NO_PROD'
             searchQuery: ''
         };
+
+        function collapseAllState() {
+            const frentes = [...new Set(state.items.map(i => i.frente || 'Sin Frente'))];
+            frentes.forEach(f => { state.expandedFrentes[f] = false; });
+            state.items.forEach(i => {
+                const key = (i.frente || 'Sin Frente') + '___' + (i.area || 'General');
+                state.expandedAreas[key] = false;
+                state.expandedItems[i.id] = false;
+            });
+        }
 
         function setFilter(filterType) {
             if (state.activeFilter === filterType && filterType !== 'ALL') {
@@ -282,6 +312,55 @@
             }
             updateFilterVisuals();
             renderDeliverablesBoard();
+        }
+
+        function updateFilterVisuals() {
+            const types = ['ALL', 'SALIO', 'PROD', 'NO_PROD'];
+            types.forEach(type => {
+                const card = document.getElementById(`kpi-card-${type}`);
+                const badge = document.getElementById(`badge-filter-${type}`);
+                if (!card) return;
+
+                if (state.activeFilter === type && type !== 'ALL') {
+                    card.classList.remove('border-slate-200');
+                    if (type === 'SALIO') {
+                        card.classList.add('border-emerald-500', 'bg-emerald-50/20', 'shadow-md', 'ring-2', 'ring-emerald-500/20');
+                    } else if (type === 'PROD') {
+                        card.classList.add('border-indigo-500', 'bg-indigo-50/20', 'shadow-md', 'ring-2', 'ring-indigo-500/20');
+                    } else if (type === 'NO_PROD') {
+                        card.classList.add('border-rose-500', 'bg-rose-50/20', 'shadow-md', 'ring-2', 'ring-rose-500/20');
+                    }
+                    if (badge) badge.classList.remove('hidden');
+                } else if (state.activeFilter === 'ALL' && type === 'ALL') {
+                    card.classList.remove('border-slate-200');
+                    card.classList.add('border-blue-500', 'bg-blue-50/20', 'shadow-md', 'ring-2', 'ring-blue-500/20');
+                    if (badge) badge.classList.remove('hidden');
+                } else {
+                    card.className = "bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-300 hover:shadow-md transition-all select-none group relative";
+                    if (badge) badge.classList.add('hidden');
+                }
+            });
+
+            const indicator = document.getElementById('active-filter-indicator');
+            const indicatorText = document.getElementById('active-filter-text');
+            if (indicator && indicatorText) {
+                if (state.activeFilter === 'SALIO') {
+                    indicator.classList.remove('hidden');
+                    indicator.classList.add('inline-flex');
+                    indicatorText.innerText = "Filtro: Salió a Producción";
+                } else if (state.activeFilter === 'PROD') {
+                    indicator.classList.remove('hidden');
+                    indicator.classList.add('inline-flex');
+                    indicatorText.innerText = "Filtro: Salen a Producción";
+                } else if (state.activeFilter === 'NO_PROD') {
+                    indicator.classList.remove('hidden');
+                    indicator.classList.add('inline-flex');
+                    indicatorText.innerText = "Filtro: No Sale a Producción";
+                } else {
+                    indicator.classList.add('hidden');
+                    indicator.classList.remove('inline-flex');
+                }
+            }
         }
 
         function handleSearch(query) {
@@ -294,11 +373,9 @@
                     clearBtn.classList.add('hidden');
                 }
             }
-            // If searching, automatically expand matching frentes/areas
             if (state.searchQuery) {
                 state.items.forEach(item => {
-                    const match = matchesSearch(item);
-                    if (match) {
+                    if (matchesSearch(item)) {
                         state.expandedFrentes[item.frente || 'Sin Frente'] = true;
                         const key = (item.frente || 'Sin Frente') + '___' + (item.area || 'General');
                         state.expandedAreas[key] = true;
@@ -327,84 +404,15 @@
             return title.includes(q) || id.includes(q) || frente.includes(q) || area.includes(q) || comment.includes(q) || type.includes(q);
         }
 
-        function updateFilterVisuals() {
-            const types = ['ALL', 'PROD', 'NO_PROD'];
-            types.forEach(type => {
-                const card = document.getElementById(`kpi-card-${type}`);
-                const badge = document.getElementById(`badge-filter-${type}`);
-                if (!card) return;
-
-                if (state.activeFilter === type && type !== 'ALL') {
-                    card.classList.remove('border-slate-200');
-                    if (type === 'PROD') {
-                        card.classList.add('border-emerald-500', 'bg-emerald-50/20', 'shadow-md', 'ring-2', 'ring-emerald-500/20');
-                    } else if (type === 'NO_PROD') {
-                        card.classList.add('border-rose-500', 'bg-rose-50/20', 'shadow-md', 'ring-2', 'ring-rose-500/20');
-                    }
-                    if (badge) badge.classList.remove('hidden');
-                } else if (state.activeFilter === 'ALL' && type === 'ALL') {
-                    card.classList.remove('border-slate-200');
-                    card.classList.add('border-blue-500', 'bg-blue-50/20', 'shadow-md', 'ring-2', 'ring-blue-500/20');
-                    if (badge) badge.classList.remove('hidden');
-                } else {
-                    card.className = "bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-300 hover:shadow-md transition-all select-none group relative";
-                    if (badge) badge.classList.add('hidden');
-                }
-            });
-
-            const indicator = document.getElementById('active-filter-indicator');
-            const indicatorText = document.getElementById('active-filter-text');
-            if (indicator && indicatorText) {
-                if (state.activeFilter === 'PROD') {
-                    indicator.classList.remove('hidden');
-                    indicator.classList.add('inline-flex');
-                    indicatorText.innerText = "Filtro: Salen a Producción";
-                } else if (state.activeFilter === 'NO_PROD') {
-                    indicator.classList.remove('hidden');
-                    indicator.classList.add('inline-flex');
-                    indicatorText.innerText = "Filtro: No Sale a Producción";
-                } else {
-                    indicator.classList.add('hidden');
-                    indicator.classList.remove('inline-flex');
-                }
-            }
-        }
-
-        function initApp() {
-            try {
-                const storedNotes = localStorage.getItem('pmo_specialist_notes_v27');
-                if (storedNotes) state.commentsStorage = JSON.parse(storedNotes);
-
-                const storedItems = localStorage.getItem('pmo_items_dataset_v27');
-                if (storedItems) {
-                    state.items = JSON.parse(storedItems);
-                } else {
-                    state.items = [...GOOGLE_SHEET_DEFAULT_ITEMS];
-                }
-            } catch (e) {
-                state.items = [...GOOGLE_SHEET_DEFAULT_ITEMS];
-            }
-
-            // Excluir frente Transversales si existiera en cache
-            state.items = state.items.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
-
-            collapseAllState();
-            updateKPIs();
-            updateFilterVisuals();
+        function toggleFrente(frenteName) {
+            state.expandedFrentes[frenteName] = !state.expandedFrentes[frenteName];
             renderDeliverablesBoard();
-
-            // Sincronización en segundo plano con Google Sheet
-            syncWithGoogleSheet(true);
         }
 
-        function collapseAllState() {
-            const frentes = [...new Set(state.items.map(i => i.frente || 'Sin Frente'))];
-            frentes.forEach(f => { state.expandedFrentes[f] = false; });
-            state.items.forEach(i => {
-                const key = (i.frente || 'Sin Frente') + '___' + (i.area || 'General');
-                state.expandedAreas[key] = false;
-                state.expandedItems[i.id] = false;
-            });
+        function toggleArea(frenteName, areaName) {
+            const key = frenteName + '___' + areaName;
+            state.expandedAreas[key] = !state.expandedAreas[key];
+            renderDeliverablesBoard();
         }
 
         function toggleItemDetails(itemId) {
@@ -428,17 +436,6 @@
             }
         }
 
-        function toggleFrente(frenteName) {
-            state.expandedFrentes[frenteName] = !state.expandedFrentes[frenteName];
-            renderDeliverablesBoard();
-        }
-
-        function toggleArea(frenteName, areaName) {
-            const key = frenteName + '___' + areaName;
-            state.expandedAreas[key] = !state.expandedAreas[key];
-            renderDeliverablesBoard();
-        }
-
         function expandAllFrentes(shouldExpand) {
             const frentes = [...new Set(state.items.map(i => i.frente || 'Sin Frente'))];
             frentes.forEach(f => {
@@ -451,29 +448,77 @@
             renderDeliverablesBoard();
         }
 
-        function saveData() {
-            localStorage.setItem('pmo_items_dataset_v26', JSON.stringify(state.items));
-            localStorage.setItem('pmo_specialist_notes_v26', JSON.stringify(state.commentsStorage));
+        function initApp() {
+            try {
+                const storedNotes = localStorage.getItem('pmo_specialist_notes_v29');
+                if (storedNotes) state.commentsStorage = JSON.parse(storedNotes);
+
+                const storedItems = localStorage.getItem('pmo_items_dataset_v29');
+                if (storedItems) {
+                    state.items = JSON.parse(storedItems);
+                } else {
+                    state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
+                }
+                
+                // Ensure 'SI' status for the 10 deployed items
+                ['384191', '390493', '392364', '393042', '336505', '369818', '386348', '384025', '358165', '390316'].forEach(id => {
+                    const target = state.items.find(i => i.id === id);
+                    if (target) target.saleProd = 'SI';
+                });
+            } catch (e) {
+                state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
+            }
+
+            collapseAllState();
             updateKPIs();
+            updateFilterVisuals();
+            renderDeliverablesBoard();
+
+            syncWithGoogleSheet(true);
+        }
+
+        function isSalioStatus(saleProdStr) {
+            if (!saleProdStr) return false;
+            const s = String(saleProdStr).toUpperCase().trim();
+            return s === 'SI' || s === 'SÍ' || s.includes('SALIÓ') || s.includes('SALIO') || s.includes('DESPLEGADO') || s.includes('COMPLETADO') || s.includes('EXITOSO');
+        }
+
+        function isNoProdStatus(saleProdStr) {
+            if (!saleProdStr) return false;
+            const s = String(saleProdStr).toUpperCase().trim();
+            return s === 'NO' || s.includes('DESPRIORIZADO') || s.includes('CANCELADO') || s.includes('DETENIDO');
+        }
+
+        function isProgramadoStatus(saleProdStr) {
+            if (!saleProdStr) return false;
+            return !isSalioStatus(saleProdStr) && !isNoProdStatus(saleProdStr);
         }
 
         function updateKPIs() {
             const total = state.items.length;
-            const prodItems = state.items.filter(i => i.saleProd && !i.saleProd.toUpperCase().includes('NO') && !i.saleProd.toUpperCase().includes('DESPRIORIZADO'));
-            const prodCount = prodItems.length;
-            const ecabCount = state.items.filter(i => (i.saleProd && i.saleProd.includes('ECAB')) || (i.type && i.type.includes('ECAB')) || (i.comentarios && i.comentarios.includes('ECAB'))).length;
-            const despCount = state.items.filter(i => i.saleProd && (i.saleProd.toUpperCase().includes('NO') || i.saleProd.toUpperCase().includes('DESPRIORIZADO'))).length;
+            const salioCount = state.items.filter(i => isSalioStatus(i.saleProd)).length;
+            const prodCount = state.items.filter(i => isProgramadoStatus(i.saleProd)).length;
+            const despCount = state.items.filter(i => isNoProdStatus(i.saleProd)).length;
 
             const frentesCount = new Set(state.items.map(i => i.frente)).size;
 
             if (document.getElementById('kpi-total')) document.getElementById('kpi-total').innerText = total;
             if (document.getElementById('kpi-frentes-sub')) document.getElementById('kpi-frentes-sub').innerText = `En ${frentesCount} frente(s) de negocio`;
+
+            if (document.getElementById('kpi-salio')) document.getElementById('kpi-salio').innerText = salioCount;
+            if (document.getElementById('kpi-salio-pct')) document.getElementById('kpi-salio-pct').innerText = total ? `${Math.round((salioCount / total) * 100)}%` : '0%';
             
             if (document.getElementById('kpi-prod')) document.getElementById('kpi-prod').innerText = prodCount;
             if (document.getElementById('kpi-prod-pct')) document.getElementById('kpi-prod-pct').innerText = total ? `${Math.round((prodCount / total) * 100)}%` : '0%';
-            if (document.getElementById('kpi-ecab-count')) document.getElementById('kpi-ecab-count').innerText = `${ecabCount} despliegues vía ECAB`;
 
             if (document.getElementById('kpi-desp')) document.getElementById('kpi-desp').innerText = despCount;
+            if (document.getElementById('kpi-desp-pct')) document.getElementById('kpi-desp-pct').innerText = total ? `${Math.round((despCount / total) * 100)}%` : '0%';
+        }
+
+        function saveData() {
+            localStorage.setItem('pmo_items_dataset_v29', JSON.stringify(state.items));
+            localStorage.setItem('pmo_specialist_notes_v29', JSON.stringify(state.commentsStorage));
+            updateKPIs();
         }
 
         async function syncWithGoogleSheet(silent = false) {
@@ -487,21 +532,21 @@
                 
                 const parsed = parseCSV(csvData);
                 if (parsed && parsed.length > 0) {
-                    state.items = parsed;
+                    state.items = parsed.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
                     collapseAllState();
                     saveData();
                     renderDeliverablesBoard();
-                    if (!silent) showToast(`Sincronizados ${parsed.length} entregables desde Google Sheets`);
+                    if (!silent) showToast(`Sincronizados ${state.items.length} entregables desde Google Sheets`);
                 } else {
                     throw new Error("Formato inválido");
                 }
             } catch (err) {
                 if (!silent) {
-                    state.items = [...GOOGLE_SHEET_DEFAULT_ITEMS];
+                    state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
                     collapseAllState();
                     saveData();
                     renderDeliverablesBoard();
-                    showToast("Datos cargados desde el resguardo del Google Sheet");
+                    showToast("Datos cargados desde el resguardo local");
                 }
             } finally {
                 if (icon) icon.classList.remove('fa-spin');
@@ -548,20 +593,16 @@
                 const cols = lines[i].split(delimiter).map(c => c.trim().replace(/^"|"$/g, ''));
                 if (cols.length < 2) continue;
 
-                let frenteVal = (idxFrente !== -1 && cols[idxFrente]) ? cols[idxFrente] : 'Frente General';
-
-                // Excluir automáticamente el frente Transversales
-                if (frenteVal.toLowerCase().includes('transversal')) {
-                    continue;
-                }
-
                 let saleProdVal = (cols[idxProd] !== undefined) ? cols[idxProd] : '';
                 let typeVal = (cols[idxType] !== undefined && cols[idxType] !== '') ? cols[idxType] : (cols[9] || '');
+
+                const itemFrente = (idxFrente !== -1 && cols[idxFrente]) ? cols[idxFrente] : 'Frente General';
+                if (itemFrente.toLowerCase().includes('transversal')) continue;
 
                 items.push({
                     id: (idxId !== -1 && cols[idxId]) ? cols[idxId] : String(Date.now() + i),
                     type: typeVal,
-                    frente: frenteVal,
+                    frente: itemFrente,
                     area: (idxArea !== -1 && cols[idxArea]) ? cols[idxArea] : 'PL - General',
                     title: (idxTitle !== -1 && cols[idxTitle]) ? cols[idxTitle] : cols[0] || 'Entregable',
                     finishDate: (idxFinish !== -1 && cols[idxFinish]) ? cols[idxFinish] : '',
@@ -611,15 +652,15 @@
             const container = document.getElementById('deliverables-container');
             if (!container) return;
 
-            // Apply active KPI filter
             let items = state.items;
-            if (state.activeFilter === 'PROD') {
-                items = items.filter(i => i.saleProd && !i.saleProd.toUpperCase().includes('NO') && !i.saleProd.toUpperCase().includes('DESPRIORIZADO'));
+            if (state.activeFilter === 'SALIO') {
+                items = items.filter(i => isSalioStatus(i.saleProd));
+            } else if (state.activeFilter === 'PROD') {
+                items = items.filter(i => isProgramadoStatus(i.saleProd));
             } else if (state.activeFilter === 'NO_PROD') {
-                items = items.filter(i => i.saleProd && (i.saleProd.toUpperCase().includes('NO') || i.saleProd.toUpperCase().includes('DESPRIORIZADO')));
+                items = items.filter(i => isNoProdStatus(i.saleProd));
             }
 
-            // Apply text search filter
             if (state.searchQuery) {
                 items = items.filter(i => matchesSearch(i));
             }
@@ -699,10 +740,13 @@
                         const currentNote = state.commentsStorage[item.id] !== undefined ? state.commentsStorage[item.id] : item.comentarios;
                         const isItemExpanded = state.expandedItems[item.id] === true;
 
-                        const isNo = item.saleProd && item.saleProd.toUpperCase().includes('NO');
-                        const saleBadgeClass = isNo 
-                            ? 'bg-rose-50 text-rose-700 border-rose-200' 
-                            : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                        const isSalio = isSalioStatus(item.saleProd);
+                        const isNo = isNoProdStatus(item.saleProd);
+                        const saleBadgeClass = isSalio
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : isNo 
+                                ? 'bg-rose-50 text-rose-700 border-rose-200' 
+                                : 'bg-indigo-50 text-indigo-700 border-indigo-200';
 
                         html += `
                             <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between hover:border-slate-300 transition-all">
@@ -864,6 +908,7 @@
             document.querySelectorAll('textarea').forEach(ta => autoResizeTextarea(ta));
         });
 
+        // Initialize application on page load
         window.onload = function() {
             initApp();
         };

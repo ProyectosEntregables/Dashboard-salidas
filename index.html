@@ -104,7 +104,7 @@
                     <span class="tracking-wider uppercase group-hover:text-blue-600 transition-colors">ENTREGABLES TOTALES</span>
                     <i class="fa-solid fa-box-archive text-blue-500 text-sm"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2" id="kpi-total">23</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2" id="kpi-total">24</div>
                 <div class="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between" id="kpi-frentes-sub">
                     <span>100% visibilidad en tablero</span>
                     <span class="text-[10px] text-blue-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Ver todos <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
@@ -139,7 +139,7 @@
                     <i class="fa-solid fa-clock text-indigo-500 text-sm"></i>
                 </div>
                 <div class="text-2xl sm:text-3xl font-extrabold text-indigo-600 mt-2">
-                    <span id="kpi-prod">9</span> <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200" id="kpi-prod-pct">39%</span>
+                    <span id="kpi-prod">10</span> <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200" id="kpi-prod-pct">42%</span>
                 </div>
                 <div class="text-[11px] text-indigo-600 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: Programado</span>
@@ -274,6 +274,7 @@
             { id: "336505", type: "ECAB", title: "Optimización Operativa y Visual de Geo Manual", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "4/7/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
             { id: "369818", type: "ECAB", title: "Reversión de Entrega - ControllerApp", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "23/8/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
             { id: "196238", type: "CAB", title: "Cierre diario: Reportes anulaciones Dashboard - anulaciones", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "30/6/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
+            { id: "385302", type: "N/A", title: "Cierre diario: Migración VPC - Auditoría de pesos", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "337681", type: "CAB", title: "Reporte de movilizados (dentro del parámetro de descuento)", frente: "Financiero", area: "PL - InterPay", finishDate: "4/7/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
             { id: "337682", type: "CAB", title: "Reporte de ventas con descuentos", frente: "Financiero", area: "PL - InterPay", finishDate: "4/7/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
             { id: "384025", type: "ECAB", title: "Mejoras de Interfaz, Copy \"Sigue Tu Envío\" (Pago Anticipado)", frente: "Logístico", area: "PL - Cambios", finishDate: "19/8/2026", nuevaFecha: "28/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Completada" },
@@ -450,10 +451,10 @@
 
         function initApp() {
             try {
-                const storedNotes = localStorage.getItem('pmo_specialist_notes_v29');
+                const storedNotes = localStorage.getItem('pmo_specialist_notes_v30');
                 if (storedNotes) state.commentsStorage = JSON.parse(storedNotes);
 
-                const storedItems = localStorage.getItem('pmo_items_dataset_v29');
+                const storedItems = localStorage.getItem('pmo_items_dataset_v30');
                 if (storedItems) {
                     state.items = JSON.parse(storedItems);
                 } else {
@@ -465,6 +466,21 @@
                     const target = state.items.find(i => i.id === id);
                     if (target) target.saleProd = 'SI';
                 });
+
+                // Ensure newly added item 385302 is present in state
+                if (!state.items.some(i => i.id === '385302')) {
+                    state.items.push({ 
+                        id: "385302", 
+                        type: "N/A", 
+                        title: "Cierre diario: Migración VPC - Auditoría de pesos", 
+                        frente: "Financiero", 
+                        area: "PL - Mejoras Financieras", 
+                        finishDate: "31/8/2026", 
+                        nuevaFecha: "", 
+                        saleProd: "Programado", 
+                        comentarios: "" 
+                    });
+                }
             } catch (e) {
                 state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
             }

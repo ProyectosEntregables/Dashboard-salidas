@@ -53,7 +53,6 @@
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen pb-12 transition-colors duration-200">
 
-    <!-- Header & Navigation Bar -->
     <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
@@ -96,7 +95,6 @@
     <!-- Main Container -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-5">
 
-        <!-- Top KPI Metric Cards (Interactive Filters) -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-6">
             <!-- Card 1: Entregables Totales -->
             <div id="kpi-card-ALL" onclick="setFilter('ALL')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 hover:shadow-md transition-all select-none group relative">
@@ -104,7 +102,7 @@
                     <span class="tracking-wider uppercase group-hover:text-blue-600 transition-colors">ENTREGABLES TOTALES</span>
                     <i class="fa-solid fa-box-archive text-blue-500 text-sm"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2" id="kpi-total">24</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2" id="kpi-total">28</div>
                 <div class="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between" id="kpi-frentes-sub">
                     <span>100% visibilidad en tablero</span>
                     <span class="text-[10px] text-blue-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Ver todos <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
@@ -121,7 +119,7 @@
                     <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
                 </div>
                 <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-2">
-                    <span id="kpi-salio">10</span> <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" id="kpi-salio-pct">43%</span>
+                    <span id="kpi-salio">13</span> <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" id="kpi-salio-pct">46%</span>
                 </div>
                 <div class="text-[11px] text-emerald-600 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: SI</span>
@@ -139,7 +137,7 @@
                     <i class="fa-solid fa-clock text-indigo-500 text-sm"></i>
                 </div>
                 <div class="text-2xl sm:text-3xl font-extrabold text-indigo-600 mt-2">
-                    <span id="kpi-prod">10</span> <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200" id="kpi-prod-pct">42%</span>
+                    <span id="kpi-prod">11</span> <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200" id="kpi-prod-pct">39%</span>
                 </div>
                 <div class="text-[11px] text-indigo-600 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: Programado</span>
@@ -157,7 +155,7 @@
                     <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i>
                 </div>
                 <div class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">
-                    <span id="kpi-desp">4</span> <span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200" id="kpi-desp-pct">17%</span>
+                    <span id="kpi-desp">4</span> <span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200" id="kpi-desp-pct">14%</span>
                 </div>
                 <div class="text-[11px] text-rose-600 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: NO</span>
@@ -169,7 +167,6 @@
             </div>
         </section>
 
-        <!-- Controls & Search Bar -->
         <div id="tab-matriz" class="block">
             <div class="bg-white p-3.5 px-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-3 no-print">
                 <div class="flex items-center gap-2 w-full md:w-auto flex-1 max-w-md">
@@ -201,13 +198,11 @@
 
     </div>
 
-    <!-- Notification Toast -->
     <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl text-xs font-medium border border-slate-700 z-50 transform transition-all duration-300 translate-y-20 opacity-0 flex items-center gap-2.5">
         <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
         <span id="toast-message">Información actualizada</span>
     </div>
 
-    <!-- Data Import Modal -->
     <div id="modal-import" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden">
             <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
@@ -254,7 +249,6 @@
         </div>
     </div>
 
-    <!-- Application Script Logic -->
     <script>
         const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1Xza_09EONAlbuMaQ8EdcwxbD1Q0DdY3bwqPX3iWXGx4/gviz/tq?tqx=out:csv";
         
@@ -272,17 +266,21 @@
             { id: "383903", type: "CAB", title: "Micro Site", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "390493", type: "ECAB", title: "Migración Redis Cloud", frente: "Integraciones", area: "PL - Integraciones", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
             { id: "336505", type: "ECAB", title: "Optimización Operativa y Visual de Geo Manual", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "4/7/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
-            { id: "369818", type: "ECAB", title: "Reversión de Entrega - ControllerApp", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "23/8/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
+            { id: "369818", type: "ECAB", title: "Reversión de Entrega - ControllerApp", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "23/08/2026", nuevaFecha: "30/08/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
             { id: "196238", type: "CAB", title: "Cierre diario: Reportes anulaciones Dashboard - anulaciones", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "30/6/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
             { id: "385302", type: "N/A", title: "Cierre diario: Migración VPC - Auditoría de pesos", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "337681", type: "CAB", title: "Reporte de movilizados (dentro del parámetro de descuento)", frente: "Financiero", area: "PL - InterPay", finishDate: "4/7/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
             { id: "337682", type: "CAB", title: "Reporte de ventas con descuentos", frente: "Financiero", area: "PL - InterPay", finishDate: "4/7/2026", nuevaFecha: "31/8/2026", saleProd: "Programado", comentarios: "" },
+            { id: "382614", type: "ECAB", title: "Reversión de entrega - Interpay", frente: "Financiero", area: "PL - InterPay", finishDate: "22/08/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05" },
             { id: "384025", type: "ECAB", title: "Mejoras de Interfaz, Copy \"Sigue Tu Envío\" (Pago Anticipado)", frente: "Logístico", area: "PL - Cambios", finishDate: "19/8/2026", nuevaFecha: "28/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Completada" },
             { id: "358165", type: "ECAB", title: "Mejora Cambios: Centro Acopio WPF y Logística Inversa WPF", frente: "Logístico", area: "PL - Cambios", finishDate: "2/8/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB" },
             { id: "383904", type: "N/A", title: "Definiciones de Modelo", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "383905", type: "N/A", title: "Proceso de Pago Seller", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
             { id: "371364", type: "N/A", title: "Revisión / Actualización Políticas y T&C", frente: "Comercio Electrónico", area: "PL - Comercio Electronico", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "Programado", comentarios: "" },
-            { id: "390316", type: "", title: "Lista restrictiva débito automático InterPay en portal de clientes", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "Despliegue confirmado" }
+            { id: "390316", type: "", title: "Lista restrictiva débito automático InterPay en portal de clientes", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "Despliegue confirmado" },
+            { id: "366686", type: "ECAB", title: "MEJORAS INTERAPP R3", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: "" },
+            { id: "366688", type: "ECAB", title: "MEJORAS INTERAP R4", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: "" },
+            { id: "371706", type: "CAB", title: "Reversion de entrega - Interapp", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "13/08/2026", nuevaFecha: "02/09/2026", saleProd: "Programado", comentarios: "" }
         ];
 
         let state = {
@@ -461,13 +459,124 @@
                     state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
                 }
                 
-                // Ensure 'SI' status for the 10 deployed items
-                ['384191', '390493', '392364', '393042', '336505', '369818', '386348', '384025', '358165', '390316'].forEach(id => {
-                    const target = state.items.find(i => i.id === id);
-                    if (target) target.saleProd = 'SI';
+                // Ensure all deployed items carry "SI" status and "ECAB" types where applicable
+                const siIds = ['386348', '384191', '392364', '393042', '390493', '336505', '369818', '384025', '358165', '390316', '366686', '366688'];
+                siIds.forEach(id => {
+                    let item = state.items.find(i => i.id === id);
+                    if (item) {
+                        item.saleProd = "SI";
+                    }
                 });
 
-                // Ensure newly added item 385302 is present in state
+                // Ensure InterPay item 382614 exists
+                let item382614 = state.items.find(i => i.id === '382614');
+                if (!item382614) {
+                    state.items.push({
+                        id: "382614",
+                        type: "ECAB",
+                        title: "Reversión de entrega - Interpay",
+                        frente: "Financiero",
+                        area: "PL - InterPay",
+                        finishDate: "22/08/2026",
+                        nuevaFecha: "",
+                        saleProd: "Programado",
+                        comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05"
+                    });
+                } else {
+                    item382614.frente = "Financiero";
+                    item382614.area = "PL - InterPay";
+                    item382614.type = "ECAB";
+                    item382614.saleProd = "Programado";
+                    item382614.finishDate = "22/08/2026";
+                    item382614.comentarios = item382614.comentarios || "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05";
+                }
+
+                // Ensure InterApp items exist with ECAB type
+                let item366686 = state.items.find(i => i.id === '366686');
+                if (!item366686) {
+                    item366686 = {
+                        id: "366686",
+                        type: "ECAB",
+                        title: "MEJORAS INTERAPP R3",
+                        frente: "Logístico",
+                        area: "PL - Evolución InterApp",
+                        finishDate: "22/07/2026",
+                        nuevaFecha: "29/08/2026",
+                        saleProd: "SI",
+                        comentarios: ""
+                    };
+                    state.items.push(item366686);
+                } else {
+                    item366686.type = "ECAB";
+                    item366686.saleProd = "SI";
+                }
+
+                let item366688 = state.items.find(i => i.id === '366688');
+                if (!item366688) {
+                    item366688 = {
+                        id: "366688",
+                        type: "ECAB",
+                        title: "MEJORAS INTERAP R4",
+                        frente: "Logístico",
+                        area: "PL - Evolución InterApp",
+                        finishDate: "22/07/2026",
+                        nuevaFecha: "29/08/2026",
+                        saleProd: "SI",
+                        comentarios: ""
+                    };
+                    state.items.push(item366688);
+                } else {
+                    item366688.type = "ECAB";
+                    item366688.saleProd = "SI";
+                }
+
+                // Ensure item 371706 is present
+                let item371706 = state.items.find(i => i.id === '371706');
+                if (!item371706) {
+                    state.items.push({
+                        id: "371706",
+                        type: "CAB",
+                        title: "Reversion de entrega - Interapp",
+                        frente: "Logístico",
+                        area: "PL - Evolución InterApp",
+                        finishDate: "13/08/2026",
+                        nuevaFecha: "02/09/2026",
+                        saleProd: "Programado",
+                        comentarios: ""
+                    });
+                } else {
+                    item371706.frente = "Logístico";
+                    item371706.area = "PL - Evolución InterApp";
+                    item371706.type = "CAB";
+                    item371706.saleProd = "Programado";
+                    item371706.finishDate = "13/08/2026";
+                    item371706.nuevaFecha = "02/09/2026";
+                }
+
+                // Ensure item 369818 is present
+                let item369818 = state.items.find(i => i.id === '369818');
+                if (!item369818) {
+                    state.items.push({
+                        id: "369818",
+                        type: "ECAB",
+                        title: "Reversión de Entrega - ControllerApp",
+                        frente: "Logístico",
+                        area: "PL - Mejoras logísticas",
+                        finishDate: "23/08/2026",
+                        nuevaFecha: "30/08/2026",
+                        saleProd: "SI",
+                        comentarios: ""
+                    });
+                } else {
+                    item369818.frente = "Logístico";
+                    item369818.area = "PL - Mejoras logísticas";
+                    item369818.saleProd = "SI";
+                    item369818.type = "ECAB";
+                    item369818.finishDate = "23/08/2026";
+                    item369818.nuevaFecha = "30/08/2026";
+                }
+
+                // Ensure item 385302 is present
                 if (!state.items.some(i => i.id === '385302')) {
                     state.items.push({ 
                         id: "385302", 
@@ -486,6 +595,7 @@
             }
 
             collapseAllState();
+            saveData();
             updateKPIs();
             updateFilterVisuals();
             renderDeliverablesBoard();
@@ -532,8 +642,8 @@
         }
 
         function saveData() {
-            localStorage.setItem('pmo_items_dataset_v29', JSON.stringify(state.items));
-            localStorage.setItem('pmo_specialist_notes_v29', JSON.stringify(state.commentsStorage));
+            localStorage.setItem('pmo_items_dataset_v30', JSON.stringify(state.items));
+            localStorage.setItem('pmo_specialist_notes_v30', JSON.stringify(state.commentsStorage));
             updateKPIs();
         }
 
@@ -704,6 +814,11 @@
                 grouped[f][a].push(item);
             });
 
+            // Ensure "PL - Evolución InterApp" exists in Logístico even if empty
+            if (grouped['Logístico'] && !grouped['Logístico']['PL - Evolución InterApp']) {
+                grouped['Logístico']['PL - Evolución InterApp'] = [];
+            }
+
             let html = '';
             for (const [frente, areas] of Object.entries(grouped)) {
                 const totalInFrente = Object.values(areas).reduce((acc, arr) => acc + arr.length, 0);
@@ -748,7 +863,13 @@
                                 </span>
                             </div>
 
-                            <div class="p-3 grid grid-cols-1 md:grid-cols-2 gap-3 ${isAreaExpanded ? '' : 'hidden'}">
+                            ${itemsInArea.length === 0 ? `
+                                <div class="p-4 text-center text-slate-400 text-xs italic ${isAreaExpanded ? '' : 'hidden'}">
+                                    <i class="fa-solid fa-folder-open text-slate-300 mr-1.5"></i> Sin entregables asignados en este área actualmente.
+                                </div>
+                            ` : `
+                                <div class="p-3 grid grid-cols-1 md:grid-cols-2 gap-3 ${isAreaExpanded ? '' : 'hidden'}">
+                            `}
                     `;
 
                     itemsInArea.forEach(item => {
@@ -820,8 +941,11 @@
                         `;
                     });
 
+                    if (itemsInArea.length > 0) {
+                        html += `</div>`;
+                    }
+
                     html += `
-                            </div>
                         </div>
                     `;
                 }

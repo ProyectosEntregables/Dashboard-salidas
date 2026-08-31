@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Ejecutivo & Control PMO | Junta Directiva</title>
-    <!-- Tailwind CSS -->
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js CDN for Executive Board Visual Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,9 +28,10 @@
             }
         }
     </script>
-    <!-- Custom CSS Styles -->
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
         body { 
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
@@ -40,18 +45,31 @@
             background: rgba(0,0,0,0.04);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(148, 163, 184, 0.5);
+            background: rgba(148, 163, 184, 0.4);
             border-radius: 4px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(71, 85, 105, 0.6);
         }
         
         @media print {
             .no-print { display: none !important; }
-            body { background: white; padding: 0; color: black; }
+            body { background: white !important; padding: 0 !important; color: black !important; }
             header { position: relative !important; box-shadow: none !important; }
+            .print-break-inside-avoid { break-inside: avoid; }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen pb-12 transition-colors duration-200">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen pb-12 transition-colors duration-200">
 
     <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -76,6 +94,23 @@
             </div>
             
             <div id="nav-tabs-container" class="hidden md:flex flex-wrap items-center space-x-2 w-full md:w-auto no-print pt-2 md:pt-0 border-t border-slate-800 md:border-0">
+                <!-- View Selector Tabs -->
+                <div class="bg-slate-800 p-1 rounded-lg border border-slate-700 flex items-center gap-1 mr-2">
+                    <button onclick="setActiveTab('matriz')" id="nav-tab-matriz" class="px-3 py-1 text-xs font-bold rounded-md transition text-white bg-blue-600 shadow-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-table-cells"></i> Matriz
+                    </button>
+                    <button onclick="setActiveTab('analytics')" id="nav-tab-analytics" class="px-3 py-1 text-xs font-bold rounded-md transition text-slate-400 hover:text-white flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-pie"></i> Resumen Ejecutivo
+                    </button>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleDarkMode()" class="p-2 bg-slate-800 text-amber-400 hover:text-amber-300 rounded-lg border border-slate-700 transition" title="Cambiar Tema Claro / Oscuro">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:inline"></i>
+                </button>
+
+                <!-- Actions Buttons -->
                 <button onclick="syncWithGoogleSheet()" id="btn-sync" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-emerald-700/80 text-white hover:bg-emerald-600 transition whitespace-nowrap border border-emerald-600 flex items-center gap-1.5" title="Sincronizar datos con Google Sheets">
                     <i class="fa-solid fa-arrows-rotate" id="sync-icon"></i> Sincronizar Sheets
                 </button>
@@ -97,15 +132,15 @@
         <!-- Top KPI Metric Cards (Interactive Filters) -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-6">
             <!-- Card 1: Entregables Totales -->
-            <div id="kpi-card-ALL" onclick="setFilter('ALL')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 hover:shadow-md transition-all select-none group relative">
-                <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
-                    <span class="tracking-wider uppercase group-hover:text-blue-600 transition-colors">ENTREGABLES TOTALES</span>
+            <div id="kpi-card-ALL" onclick="setFilter('ALL')" class="bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:border-blue-400 hover:shadow-md transition-all select-none group relative">
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-semibold">
+                    <span class="tracking-wider uppercase group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">ENTREGABLES TOTALES</span>
                     <i class="fa-solid fa-box-archive text-blue-500 text-sm"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2" id="kpi-total">29</div>
-                <div class="text-[11px] text-slate-500 mt-1 font-medium flex items-center justify-between" id="kpi-frentes-sub">
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="kpi-total">29</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium flex items-center justify-between" id="kpi-frentes-sub">
                     <span>100% visibilidad en tablero</span>
-                    <span class="text-[10px] text-blue-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Ver todos <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
+                    <span class="text-[10px] text-blue-600 dark:text-blue-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Ver todos <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
                 </div>
                 <div id="badge-filter-ALL" class="absolute -top-2.5 right-3 bg-blue-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
                     Filtro Activo
@@ -113,17 +148,17 @@
             </div>
 
             <!-- Card 2: Salió a Producción (SI) -->
-            <div id="kpi-card-SALIO" onclick="setFilter('SALIO')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all select-none group relative">
-                <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
-                    <span class="tracking-wider uppercase group-hover:text-indigo-600 transition-colors">SALIÓ A PRODUCCIÓN</span>
+            <div id="kpi-card-SALIO" onclick="setFilter('SALIO')" class="bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all select-none group relative">
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-semibold">
+                    <span class="tracking-wider uppercase group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">SALIÓ A PRODUCCIÓN</span>
                     <i class="fa-solid fa-circle-check text-indigo-500 text-sm"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-indigo-600 mt-2">
-                    <span id="kpi-salio">11</span> <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200" id="kpi-salio-pct">38%</span>
+                <div class="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-2">
+                    <span id="kpi-salio">11</span> <span class="text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800" id="kpi-salio-pct">38%</span>
                 </div>
-                <div class="text-[11px] text-indigo-600 mt-1 font-medium flex items-center justify-between">
+                <div class="text-[11px] text-indigo-600 dark:text-indigo-400 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: SI</span>
-                    <span class="text-[10px] text-indigo-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
+                    <span class="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
                 </div>
                 <div id="badge-filter-SALIO" class="absolute -top-2.5 right-3 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
                     Filtro Activo
@@ -131,17 +166,17 @@
             </div>
 
             <!-- Card 3: No Sale a Producción (NO) -->
-            <div id="kpi-card-NO_PROD" onclick="setFilter('NO_PROD')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-rose-400 hover:shadow-md transition-all select-none group relative">
-                <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
-                    <span class="tracking-wider uppercase group-hover:text-rose-600 transition-colors">VENCIDOS</span>
+            <div id="kpi-card-NO_PROD" onclick="setFilter('NO_PROD')" class="bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:border-rose-400 hover:shadow-md transition-all select-none group relative">
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-semibold">
+                    <span class="tracking-wider uppercase group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">VENCIDOS / NO SALEN</span>
                     <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">
-                    <span id="kpi-desp">5</span> <span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200" id="kpi-desp-pct">17%</span>
+                <div class="text-2xl sm:text-3xl font-extrabold text-rose-600 dark:text-rose-400 mt-2">
+                    <span id="kpi-desp">5</span> <span class="text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/80 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-800" id="kpi-desp-pct">17%</span>
                 </div>
-                <div class="text-[11px] text-rose-600 mt-1 font-medium flex items-center justify-between">
+                <div class="text-[11px] text-rose-600 dark:text-rose-400 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: NO</span>
-                    <span class="text-[10px] text-rose-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
+                    <span class="text-[10px] text-rose-600 dark:text-rose-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
                 </div>
                 <div id="badge-filter-NO_PROD" class="absolute -top-2.5 right-3 bg-rose-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
                     Filtro Activo
@@ -149,17 +184,17 @@
             </div>
 
             <!-- Card 4: Próximas Salidas (Programado) -->
-            <div id="kpi-card-PROD" onclick="setFilter('PROD')" class="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-amber-400 hover:shadow-md transition-all select-none group relative">
-                <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
-                    <span class="tracking-wider uppercase group-hover:text-amber-600 transition-colors">PRÓXIMAS SALIDAS</span>
+            <div id="kpi-card-PROD" onclick="setFilter('PROD')" class="bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:border-amber-400 hover:shadow-md transition-all select-none group relative">
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-semibold">
+                    <span class="tracking-wider uppercase group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">PRÓXIMAS SALIDAS</span>
                     <i class="fa-solid fa-clock text-amber-500 text-sm"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 mt-2">
-                    <span id="kpi-prod">13</span> <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200" id="kpi-prod-pct">46%</span>
+                <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400 mt-2">
+                    <span id="kpi-prod">13</span> <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800" id="kpi-prod-pct">46%</span>
                 </div>
-                <div class="text-[11px] text-amber-600 mt-1 font-medium flex items-center justify-between">
+                <div class="text-[11px] text-amber-600 dark:text-amber-400 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: Programado</span>
-                    <span class="text-[10px] text-amber-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
+                    <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Filtrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
                 </div>
                 <div id="badge-filter-PROD" class="absolute -top-2.5 right-3 bg-amber-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm hidden">
                     Filtro Activo
@@ -167,26 +202,27 @@
             </div>
         </section>
 
+        <!-- TAB 1: MATRIZ DE ENTREGABLES -->
         <div id="tab-matriz" class="block">
-            <div class="bg-white p-3.5 px-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-3 no-print">
+            <div class="bg-white dark:bg-slate-900 p-3.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-3 no-print">
                 <div class="flex items-center gap-2 w-full md:w-auto flex-1 max-w-md">
                     <div class="relative w-full">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Buscar por título, ID, frente o área..." class="w-full pl-8 pr-8 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:border-blue-500 outline-none transition">
+                        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Buscar por título, ID, frente o área..." class="w-full pl-8 pr-8 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 outline-none transition">
                         <button id="search-clear-btn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
-                    <span id="active-filter-indicator" class="hidden ml-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200 items-center gap-1.5 whitespace-nowrap">
+                    <span id="active-filter-indicator" class="hidden ml-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 items-center gap-1.5 whitespace-nowrap">
                         <span id="active-filter-text">Filtro: Todos</span>
-                        <button onclick="setFilter('ALL')" class="hover:text-rose-600 ml-1" title="Quitar filtro"><i class="fa-solid fa-xmark"></i></button>
+                        <button onclick="setFilter('ALL')" class="hover:text-rose-600 dark:hover:text-rose-400 ml-1" title="Quitar filtro"><i class="fa-solid fa-xmark"></i></button>
                     </span>
                 </div>
                 <div class="flex items-center space-x-2 w-full md:w-auto justify-end">
-                    <button onclick="expandAllFrentes(true)" class="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition flex items-center gap-1.5 shadow-2xs">
+                    <button onclick="expandAll(true)" class="px-3 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/80 border border-blue-200 dark:border-blue-800 rounded-lg transition flex items-center gap-1.5 shadow-2xs" title="Expandir frentes, áreas y todos los detalles">
                         <i class="fa-solid fa-angles-down"></i> Expandir todos
                     </button>
-                    <button onclick="expandAllFrentes(false)" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition flex items-center gap-1.5 shadow-2xs">
+                    <button onclick="expandAll(false)" class="px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 rounded-lg transition flex items-center gap-1.5 shadow-2xs" title="Colapsar frentes, áreas y detalles">
                         <i class="fa-solid fa-angles-up"></i> Colapsar todos
                     </button>
                 </div>
@@ -194,6 +230,61 @@
 
             <!-- Deliverables Container -->
             <div id="deliverables-container" class="space-y-6"></div>
+        </div>
+
+        <!-- TAB 2: RESUMEN EJECUTIVO & ANALYTICS -->
+        <div id="tab-analytics" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart 1: Estado General de Salidas a Producción -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-blue-500"></i> Distribución por Estado de Producción
+                    </h3>
+                    <div class="h-64 flex items-center justify-center relative">
+                        <canvas id="chart-status-donut"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Entregables por Frente de Negocio -->
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-column text-indigo-500"></i> Entregables Totales por Frente
+                    </h3>
+                    <div class="h-64 flex items-center justify-center relative">
+                        <canvas id="chart-frentes-bar"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk & Delayed Deliverables Table for Board -->
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Entregables Vencidos / Reprogramados (Atención Junta Directiva)
+                    </h3>
+                    <span class="text-xs text-rose-600 dark:text-rose-400 font-bold bg-rose-50 dark:bg-rose-950/60 px-2.5 py-1 rounded-full border border-rose-200 dark:border-rose-800" id="delayed-count-badge">
+                        0 ítems pendientes de atención
+                    </span>
+                </div>
+                
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
+                                <th class="p-3 font-bold">ID</th>
+                                <th class="p-3 font-bold">Frente / Área</th>
+                                <th class="p-3 font-bold">Título Entregable</th>
+                                <th class="p-3 font-bold">Plan Original</th>
+                                <th class="p-3 font-bold">Reprogramada</th>
+                                <th class="p-3 font-bold">Estado / Motivo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="delayed-items-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -206,7 +297,7 @@
 
     <!-- Data Import Modal -->
     <div id="modal-import" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-2xl overflow-hidden">
             <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-file-csv text-emerald-400 text-sm"></i>
@@ -218,30 +309,30 @@
             </div>
             
             <div class="p-5 space-y-4">
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-900">
+                <div class="bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900 rounded-lg p-3 text-xs text-blue-900 dark:text-blue-200">
                     <div class="font-bold flex items-center gap-1.5 mb-1">
                         <i class="fa-solid fa-link"></i> Enlace configurado:
                     </div>
-                    <a href="https://docs.google.com/spreadsheets/d/1Xza_09EONAlbuMaQ8EdcwxbD1Q0DdY3bwqPX3iWXGx4/edit?gid=0#gid=0" target="_blank" class="text-blue-700 underline break-all font-mono">
+                    <a href="https://docs.google.com/spreadsheets/d/1Xza_09EONAlbuMaQ8EdcwxbD1Q0DdY3bwqPX3iWXGx4/edit?gid=0#gid=0" target="_blank" class="text-blue-700 dark:text-blue-400 underline break-all font-mono">
                         https://docs.google.com/spreadsheets/d/1Xza_09EONAlbuMaQ8EdcwxbD1Q0DdY3bwqPX3iWXGx4/edit?gid=0#gid=0
                     </a>
                 </div>
 
-                <p class="text-xs text-slate-600 leading-relaxed">
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                     Mapeo de columnas: <strong>Columna I (índice 8)</strong> = <em>Sale a producción</em> | <strong>Columna J (índice 9)</strong> = <em>Tipo</em>.
                 </p>
 
                 <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Pegar Datos (Tabulado de Sheets o CSV)</label>
-                    <textarea id="import-text" rows="7" placeholder="ID	Work Item Type	Title	Frente	Area Path	Finish Date	Nueva Fecha	Comentarios	Sale a Produccion	Tipo" class="w-full text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg p-3 focus:bg-white focus:border-emerald-500 outline-none custom-scrollbar"></textarea>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Pegar Datos (Tabulado de Sheets o CSV)</label>
+                    <textarea id="import-text" rows="7" placeholder="ID	Work Item Type	Title	Frente	Area Path	Finish Date	Nueva Fecha	Comentarios	Sale a Produccion	Tipo" class="w-full text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 focus:bg-white dark:focus:bg-slate-900 focus:border-emerald-500 outline-none custom-scrollbar text-slate-800 dark:text-slate-100"></textarea>
                 </div>
 
-                <div class="flex items-center justify-between pt-2 border-t border-slate-100 flex-wrap gap-2">
-                    <button onclick="resetToGoogleSheetDefaults()" class="text-xs font-semibold text-slate-600 hover:text-blue-600 flex items-center gap-1.5">
+                <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 flex-wrap gap-2">
+                    <button onclick="resetToGoogleSheetDefaults()" class="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate-left"></i> Restaurar datos originales
                     </button>
                     <div class="flex gap-2">
-                        <button onclick="closeImportModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+                        <button onclick="closeImportModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">Cancelar</button>
                         <button onclick="processImportData()" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-check"></i> Cargar e Ingestar
                         </button>
@@ -293,17 +384,83 @@
             expandedAreas: {},
             expandedItems: {},
             activeFilter: 'ALL', // 'ALL' | 'SALIO' | 'PROD' | 'NO_PROD'
+            activeFrenteTab: 'ALL', // 'ALL' or specific Frente name
+            activeTab: 'matriz',
             searchQuery: ''
         };
 
-        function collapseAllState() {
+        let chartDonutInstance = null;
+        let chartBarInstance = null;
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                localStorage.setItem('pmo_theme', 'light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                localStorage.setItem('pmo_theme', 'dark');
+            }
+            if (state.activeTab === 'analytics') {
+                renderAnalyticsCharts();
+            }
+        }
+
+        function setActiveTab(tabName) {
+            state.activeTab = tabName;
+            const tabMatriz = document.getElementById('tab-matriz');
+            const tabAnalytics = document.getElementById('tab-analytics');
+            const btnMatriz = document.getElementById('nav-tab-matriz');
+            const btnAnalytics = document.getElementById('nav-tab-analytics');
+
+            if (tabName === 'matriz') {
+                tabMatriz.classList.remove('hidden');
+                tabAnalytics.classList.add('hidden');
+                btnMatriz.className = "px-3 py-1 text-xs font-bold rounded-md transition text-white bg-blue-600 shadow-sm flex items-center gap-1.5";
+                btnAnalytics.className = "px-3 py-1 text-xs font-bold rounded-md transition text-slate-400 hover:text-white flex items-center gap-1.5";
+            } else {
+                tabMatriz.classList.add('hidden');
+                tabAnalytics.classList.remove('hidden');
+                btnAnalytics.className = "px-3 py-1 text-xs font-bold rounded-md transition text-white bg-blue-600 shadow-sm flex items-center gap-1.5";
+                btnMatriz.className = "px-3 py-1 text-xs font-bold rounded-md transition text-slate-400 hover:text-white flex items-center gap-1.5";
+                renderAnalyticsCharts();
+                renderDelayedItemsTable();
+            }
+        }
+
+        function expandAll(shouldExpand) {
             const frentes = [...new Set(state.items.map(i => i.frente || 'Sin Frente'))];
-            frentes.forEach(f => { state.expandedFrentes[f] = false; });
+            frentes.forEach(f => { state.expandedFrentes[f] = shouldExpand; });
             state.items.forEach(i => {
                 const key = (i.frente || 'Sin Frente') + '___' + (i.area || 'General');
-                state.expandedAreas[key] = false;
-                state.expandedItems[i.id] = false;
+                state.expandedAreas[key] = shouldExpand;
+                state.expandedItems[i.id] = shouldExpand;
             });
+            renderDeliverablesBoard();
+        }
+
+        function setFrenteTab(frenteName) {
+            state.activeFrenteTab = frenteName;
+            renderDeliverablesBoard();
+        }
+
+        function isSalioStatus(saleProdStr) {
+            if (!saleProdStr) return false;
+            const s = String(saleProdStr).toUpperCase().trim();
+            return s === 'SI' || s === 'SÍ' || s.includes('SALIÓ') || s.includes('SALIO') || s.includes('DESPLEGADO') || s.includes('COMPLETADO') || s.includes('EXITOSO');
+        }
+
+        function isNoProdStatus(saleProdStr) {
+            if (!saleProdStr) return false;
+            const s = String(saleProdStr).toUpperCase().trim();
+            return s === 'NO' || s.includes('DESPRIORIZADO') || s.includes('CANCELADO') || s.includes('DETENIDO');
+        }
+
+        function isProgramadoStatus(saleProdStr) {
+            if (!saleProdStr) return false;
+            return !isSalioStatus(saleProdStr) && !isNoProdStatus(saleProdStr);
         }
 
         function setFilter(filterType) {
@@ -324,21 +481,21 @@
                 if (!card) return;
 
                 if (state.activeFilter === type && type !== 'ALL') {
-                    card.classList.remove('border-slate-200');
+                    card.classList.remove('border-slate-200', 'dark:border-slate-800');
                     if (type === 'SALIO') {
-                        card.classList.add('border-indigo-500', 'bg-indigo-50/20', 'shadow-md', 'ring-2', 'ring-indigo-500/20');
+                        card.classList.add('border-indigo-500', 'bg-indigo-50/30', 'dark:bg-indigo-950/40', 'shadow-md', 'ring-2', 'ring-indigo-500/20');
                     } else if (type === 'PROD') {
-                        card.classList.add('border-amber-500', 'bg-amber-50/20', 'shadow-md', 'ring-2', 'ring-amber-500/20');
+                        card.classList.add('border-amber-500', 'bg-amber-50/30', 'dark:bg-amber-950/40', 'shadow-md', 'ring-2', 'ring-amber-500/20');
                     } else if (type === 'NO_PROD') {
-                        card.classList.add('border-rose-500', 'bg-rose-50/20', 'shadow-md', 'ring-2', 'ring-rose-500/20');
+                        card.classList.add('border-rose-500', 'bg-rose-50/30', 'dark:bg-rose-950/40', 'shadow-md', 'ring-2', 'ring-rose-500/20');
                     }
                     if (badge) badge.classList.remove('hidden');
                 } else if (state.activeFilter === 'ALL' && type === 'ALL') {
-                    card.classList.remove('border-slate-200');
-                    card.classList.add('border-blue-500', 'bg-blue-50/20', 'shadow-md', 'ring-2', 'ring-blue-500/20');
+                    card.classList.remove('border-slate-200', 'dark:border-slate-800');
+                    card.classList.add('border-blue-500', 'bg-blue-50/30', 'dark:bg-blue-950/40', 'shadow-md', 'ring-2', 'ring-blue-500/20');
                     if (badge) badge.classList.remove('hidden');
                 } else {
-                    card.className = "bg-white p-4 rounded-xl border-2 border-slate-200 shadow-sm cursor-pointer hover:border-slate-300 hover:shadow-md transition-all select-none group relative";
+                    card.className = "bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all select-none group relative";
                     if (badge) badge.classList.add('hidden');
                 }
             });
@@ -357,7 +514,7 @@
                 } else if (state.activeFilter === 'NO_PROD') {
                     indicator.classList.remove('hidden');
                     indicator.classList.add('inline-flex');
-                    indicatorText.innerText = "Filtro: Vencidos";
+                    indicatorText.innerText = "Filtro: Vencidos / No Sale";
                 } else {
                     indicator.classList.add('hidden');
                     indicator.classList.remove('inline-flex');
@@ -381,6 +538,7 @@
                         state.expandedFrentes[item.frente || 'Sin Frente'] = true;
                         const key = (item.frente || 'Sin Frente') + '___' + (item.area || 'General');
                         state.expandedAreas[key] = true;
+                        state.expandedItems[item.id] = true;
                     }
                 });
             }
@@ -438,19 +596,14 @@
             }
         }
 
-        function expandAllFrentes(shouldExpand) {
-            const frentes = [...new Set(state.items.map(i => i.frente || 'Sin Frente'))];
-            frentes.forEach(f => {
-                state.expandedFrentes[f] = shouldExpand;
-            });
-            state.items.forEach(i => {
-                const key = (i.frente || 'Sin Frente') + '___' + (i.area || 'General');
-                state.expandedAreas[key] = shouldExpand;
-            });
-            renderDeliverablesBoard();
-        }
-
         function initApp() {
+            // Restore theme preference
+            const savedTheme = localStorage.getItem('pmo_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+            }
+
             try {
                 const storedNotes = localStorage.getItem('pmo_specialist_notes_v31');
                 if (storedNotes) state.commentsStorage = JSON.parse(storedNotes);
@@ -462,10 +615,10 @@
                     state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
                 }
                 
-                // Excluir automáticamente los entregables #359755, #390316 y la sección Servicios Ágiles
+                // Exclude specific legacy IDs and Services Agile area
                 state.items = state.items.filter(i => i.id !== '359755' && i.id !== '390316' && !(i.area && i.area.toLowerCase().includes('servicios ágiles')));
 
-                // Ensure all deployed items carry "SI" status and "ECAB" types where applicable
+                // Standardize deployed items status and ECAB types
                 const siIds = ['386348', '384191', '392364', '393042', '390493', '336505', '369818', '384025', '358165', '366686', '366688'];
                 siIds.forEach(id => {
                     let item = state.items.find(i => i.id === id);
@@ -474,197 +627,35 @@
                     }
                 });
 
-                // Ensure InterPay item 382614 exists
-                let item382614 = state.items.find(i => i.id === '382614');
-                if (!item382614) {
-                    state.items.push({
-                        id: "382614",
-                        type: "ECAB",
-                        title: "Reversión de entrega - Interpay",
-                        frente: "Financiero",
-                        area: "PL - InterPay",
-                        finishDate: "22/08/2026",
-                        nuevaFecha: "02/09/2026",
-                        saleProd: "NO",
-                        comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05"
-                    });
-                } else {
-                    item382614.frente = "Financiero";
-                    item382614.area = "PL - InterPay";
-                    item382614.type = "ECAB";
-                    item382614.saleProd = "NO";
-                    item382614.finishDate = "22/08/2026";
-                    item382614.nuevaFecha = "02/09/2026";
-                    item382614.comentarios = item382614.comentarios || "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05";
-                }
+                // Ensure key deliverables are consistently present and categorized
+                ensureDeliverableItem("382614", {
+                    type: "ECAB", title: "Reversión de entrega - Interpay", frente: "Financiero", area: "PL - InterPay", finishDate: "22/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05"
+                });
+                ensureDeliverableItem("366686", {
+                    type: "ECAB", title: "MEJORAS INTERAPP R3", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: ""
+                });
+                ensureDeliverableItem("366688", {
+                    type: "ECAB", title: "MEJORAS INTERAP R4", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: ""
+                });
+                ensureDeliverableItem("371706", {
+                    type: "CAB", title: "Reversion de entrega - Interapp", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "13/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: ""
+                });
+                ensureDeliverableItem("369818", {
+                    type: "ECAB", title: "Reversión de Entrega - ControllerApp", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "23/08/2026", nuevaFecha: "30/08/2026", saleProd: "SI", comentarios: ""
+                });
+                ensureDeliverableItem("385302", {
+                    type: "N/A", title: "Cierre diario: Migración VPC - Auditoría de pesos", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "31/8/2026", nuevaFecha: "05/09/2026", saleProd: "NO", comentarios: "Negocio comunicó que la afectación por la ventana solo se puede hacer sabado noche domingo madrugada"
+                });
+                ensureDeliverableItem("383277", {
+                    type: "N/A", title: "Migración Novasoft V 6.0.1", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "30/09/2026", nuevaFecha: "", saleProd: "Programado", comentarios: ""
+                });
+                ensureDeliverableItem("149607", {
+                    type: "N/A", title: "Conciliaciones Banco Davivienda", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "04/07/2026", nuevaFecha: "", saleProd: "NO", comentarios: "Desarrollo por parte del equipo desplegado en ambiente de QA. Pendiente concretar mesas técnicas con el banco para pruebas conjuntas."
+                });
+                ensureDeliverableItem("386555", {
+                    type: "ECAB", title: "Reembolso por pago en casa  - Full", frente: "Financiero", area: "PL - InterPay", finishDate: "31/08/2026", nuevaFecha: "03/09/2026", saleProd: "NO", comentarios: "Se tenía una dependencia con el proveedor de Novasoft"
+                });
 
-                // Ensure InterApp items exist with ECAB type
-                let item366686 = state.items.find(i => i.id === '366686');
-                if (!item366686) {
-                    item366686 = {
-                        id: "366686",
-                        type: "ECAB",
-                        title: "MEJORAS INTERAPP R3",
-                        frente: "Logístico",
-                        area: "PL - Evolución InterApp",
-                        finishDate: "22/07/2026",
-                        nuevaFecha: "29/08/2026",
-                        saleProd: "SI",
-                        comentarios: ""
-                    };
-                    state.items.push(item366686);
-                } else {
-                    item366686.type = "ECAB";
-                    item366686.saleProd = "SI";
-                }
-
-                let item366688 = state.items.find(i => i.id === '366688');
-                if (!item366688) {
-                    item366688 = {
-                        id: "366688",
-                        type: "ECAB",
-                        title: "MEJORAS INTERAP R4",
-                        frente: "Logístico",
-                        area: "PL - Evolución InterApp",
-                        finishDate: "22/07/2026",
-                        nuevaFecha: "29/08/2026",
-                        saleProd: "SI",
-                        comentarios: ""
-                    };
-                    state.items.push(item366688);
-                } else {
-                    item366688.type = "ECAB";
-                    item366688.saleProd = "SI";
-                }
-
-                // Ensure item 371706 is present
-                let item371706 = state.items.find(i => i.id === '371706');
-                if (!item371706) {
-                    state.items.push({
-                        id: "371706",
-                        type: "CAB",
-                        title: "Reversion de entrega - Interapp",
-                        frente: "Logístico",
-                        area: "PL - Evolución InterApp",
-                        finishDate: "13/08/2026",
-                        nuevaFecha: "02/09/2026",
-                        saleProd: "NO",
-                        comentarios: ""
-                    });
-                } else {
-                    item371706.frente = "Logístico";
-                    item371706.area = "PL - Evolución InterApp";
-                    item371706.type = "CAB";
-                    item371706.saleProd = "NO";
-                    item371706.finishDate = "13/08/2026";
-                    item371706.nuevaFecha = "02/09/2026";
-                }
-
-                // Ensure item 369818 is present
-                let item369818 = state.items.find(i => i.id === '369818');
-                if (!item369818) {
-                    state.items.push({
-                        id: "369818",
-                        type: "ECAB",
-                        title: "Reversión de Entrega - ControllerApp",
-                        frente: "Logístico",
-                        area: "PL - Mejoras logísticas",
-                        finishDate: "23/08/2026",
-                        nuevaFecha: "30/08/2026",
-                        saleProd: "SI",
-                        comentarios: ""
-                    });
-                } else {
-                    item369818.frente = "Logístico";
-                    item369818.area = "PL - Mejoras logísticas";
-                    item369818.saleProd = "SI";
-                }
-
-                // Ensure InterPay item 385302 is updated
-                let item385302 = state.items.find(i => i.id === '385302');
-                if (!item385302) {
-                    state.items.push({ 
-                        id: "385302", 
-                        type: "N/A", 
-                        title: "Cierre diario: Migración VPC - Auditoría de pesos", 
-                        frente: "Financiero", 
-                        area: "PL - Mejoras Financieras", 
-                        finishDate: "31/8/2026", 
-                        nuevaFecha: "05/09/2026", 
-                        saleProd: "NO", 
-                        comentarios: "Negocio comunicó que la afectación por la ventana solo se puede hacer sabado noche domingo madrugada" 
-                    });
-                } else {
-                    item385302.nuevaFecha = "05/09/2026";
-                    item385302.saleProd = "NO";
-                    item385302.comentarios = "Negocio comunicó que la afectación por la ventana solo se puede hacer sabado noche domingo madrugada";
-                }
-
-                // Ensure item 383277 is present
-                let item383277 = state.items.find(i => i.id === '383277');
-                if (!item383277) {
-                    state.items.push({
-                        id: "383277",
-                        type: "N/A",
-                        title: "Migración Novasoft V 6.0.1",
-                        frente: "Financiero",
-                        area: "PL - Mejoras Financieras",
-                        finishDate: "30/09/2026",
-                        nuevaFecha: "",
-                        saleProd: "Programado",
-                        comentarios: ""
-                    });
-                }
-
-                let item149607 = state.items.find(i => i.id === '149607');
-                if (!item149607) {
-                    state.items.push({
-                        id: "149607",
-                        type: "N/A",
-                        title: "Conciliaciones Banco Davivienda",
-                        frente: "Financiero",
-                        area: "PL - Mejoras Financieras",
-                        finishDate: "04/07/2026",
-                        nuevaFecha: "",
-                        saleProd: "NO",
-                        comentarios: "Desarrollo por parte del equipo desplegado en ambiente de QA. Pendiente concretar mesas técnicas con el banco para pruebas conjuntas."
-                    });
-                } else {
-                    item149607.frente = "Financiero";
-                    item149607.area = "PL - Mejoras Financieras";
-                    item149607.type = "N/A";
-                    item149607.saleProd = "NO";
-                    item149607.finishDate = "04/07/2026";
-                    item149607.nuevaFecha = "";
-                    item149607.comentarios = item149607.comentarios || "Desarrollo por parte del equipo desplegado en ambiente de QA. Pendiente concretar mesas técnicas con el banco para pruebas conjuntas.";
-                }
-
-                // Ensure InterPay item 386555 is updated
-                let item386555 = state.items.find(i => i.id === '386555');
-                if (!item386555) {
-                    state.items.push({
-                        id: "386555",
-                        type: "ECAB",
-                        title: "Reembolso por pago en casa  - Full",
-                        frente: "Financiero",
-                        area: "PL - InterPay",
-                        finishDate: "31/08/2026",
-                        nuevaFecha: "03/09/2026",
-                        saleProd: "NO",
-                        comentarios: "Se tenía una dependencia con el proveedor de Novasoft"
-                    });
-                } else {
-                    item386555.frente = "Financiero";
-                    item386555.area = "PL - InterPay";
-                    item386555.type = "ECAB";
-                    item386555.title = "Reembolso por pago en casa  - Full";
-                    item386555.saleProd = "NO";
-                    item386555.finishDate = "31/08/2026";
-                    item386555.nuevaFecha = "03/09/2026";
-                    item386555.comentarios = item386555.comentarios || "Se tenía una dependencia con el proveedor de Novasoft";
-                }
-
-                // Ensure item 383897 has Sale a Prod: Programado and Type: ECAB
                 let item383897 = state.items.find(i => i.id === '383897');
                 if (item383897) {
                     item383897.saleProd = "Programado";
@@ -674,7 +665,8 @@
                 state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
             }
 
-            collapseAllState();
+            // Expand all frentes, areas, and item details by default
+            expandAll(true);
             saveData();
             updateKPIs();
             updateFilterVisuals();
@@ -683,21 +675,19 @@
             syncWithGoogleSheet(true);
         }
 
-        function isSalioStatus(saleProdStr) {
-            if (!saleProdStr) return false;
-            const s = String(saleProdStr).toUpperCase().trim();
-            return s === 'SI' || s === 'SÍ' || s.includes('SALIÓ') || s.includes('SALIO') || s.includes('DESPLEGADO') || s.includes('COMPLETADO') || s.includes('EXITOSO');
-        }
-
-        function isNoProdStatus(saleProdStr) {
-            if (!saleProdStr) return false;
-            const s = String(saleProdStr).toUpperCase().trim();
-            return s === 'NO' || s.includes('DESPRIORIZADO') || s.includes('CANCELADO') || s.includes('DETENIDO');
-        }
-
-        function isProgramadoStatus(saleProdStr) {
-            if (!saleProdStr) return false;
-            return !isSalioStatus(saleProdStr) && !isNoProdStatus(saleProdStr);
+        function ensureDeliverableItem(id, defaults) {
+            let item = state.items.find(i => i.id === id);
+            if (!item) {
+                state.items.push({ id, ...defaults });
+            } else {
+                Object.keys(defaults).forEach(key => {
+                    if (key === 'comentarios') {
+                        item[key] = item[key] || defaults[key];
+                    } else {
+                        item[key] = defaults[key];
+                    }
+                });
+            }
         }
 
         function updateKPIs() {
@@ -739,9 +729,13 @@
                 const parsed = parseCSV(csvData);
                 if (parsed && parsed.length > 0) {
                     state.items = parsed.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
-                    collapseAllState();
+                    expandAll(true);
                     saveData();
                     renderDeliverablesBoard();
+                    if (state.activeTab === 'analytics') {
+                        renderAnalyticsCharts();
+                        renderDelayedItemsTable();
+                    }
                     if (!silent) showToast(`Sincronizados ${state.items.length} entregables desde Google Sheets`);
                 } else {
                     throw new Error("Formato inválido");
@@ -749,7 +743,7 @@
             } catch (err) {
                 if (!silent) {
                     state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
-                    collapseAllState();
+                    expandAll(true);
                     saveData();
                     renderDeliverablesBoard();
                     showToast("Datos cargados desde el resguardo local");
@@ -875,13 +869,64 @@
                 items = items.filter(i => matchesSearch(i));
             }
 
+            const customOrder = ["Logístico", "Financiero", "Comercio Electrónico", "Integraciones"];
+            const allFrentesInItems = [...new Set(state.items.map(i => i.frente || 'Sin Frente'))].sort((a, b) => {
+                let idxA = customOrder.indexOf(a);
+                let idxB = customOrder.indexOf(b);
+                if (idxA === -1) idxA = customOrder.findIndex(f => f.toLowerCase() === a.toLowerCase());
+                if (idxB === -1) idxB = customOrder.findIndex(f => f.toLowerCase() === b.toLowerCase());
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                if (idxA !== -1) return -1;
+                if (idxB !== -1) return 1;
+                return a.localeCompare(b);
+            });
+
+            // Ensure activeFrenteTab defaults to the first available frente if set to 'ALL' or invalid
+            if ((state.activeFrenteTab === 'ALL' || !allFrentesInItems.includes(state.activeFrenteTab)) && allFrentesInItems.length > 0) {
+                state.activeFrenteTab = allFrentesInItems[0];
+            }
+
+            // Build Horizontal Frente Tabs Bar with Non-Animated Scroll Indicator
+            let tabsHtml = `
+                <div class="mb-5 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider">
+                            <i class="fa-solid fa-building text-blue-500"></i>
+                            <span>Frentes de Negocio</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 shrink-0">
+                            <i class="fa-solid fa-arrows-left-right text-blue-500 text-[10px]"></i>
+                            <span>Desliza horizontalmente</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1.5 scroll-smooth whitespace-nowrap -mx-1 px-1">
+            `;
+
+            allFrentesInItems.forEach(f => {
+                const countInFrente = items.filter(i => (i.frente || 'Sin Frente') === f).length;
+                const isActive = state.activeFrenteTab === f;
+                tabsHtml += `
+                    <button onclick="setFrenteTab('${escapeHtml(f)}')" class="px-3.5 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${isActive ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+                        <i class="fa-solid fa-building text-xs ${isActive ? 'text-white' : 'text-blue-500'}"></i>
+                        <span>${escapeHtml(f)}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full font-extrabold ${isActive ? 'bg-white/20 text-white' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}">${countInFrente}</span>
+                    </button>
+                `;
+            });
+
+            tabsHtml += `
+                    </div>
+                </div>
+            `;
+
             if (items.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white p-12 rounded-xl border border-slate-200 text-center text-slate-500 text-xs font-medium">
-                        <i class="fa-solid fa-filter-circle-xmark text-3xl text-slate-300 mb-2"></i>
-                        <p class="font-bold text-slate-700">No hay entregables que coincidan con la búsqueda o filtro</p>
-                        <p class="text-slate-400 mt-1">Intenta restablecer la búsqueda o quitar el filtro superior.</p>
-                        <button onclick="clearSearch(); setFilter('ALL');" class="mt-3 px-3.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition">
+                container.innerHTML = tabsHtml + `
+                    <div class="bg-white dark:bg-slate-900 p-12 rounded-xl border border-slate-200 dark:border-slate-800 text-center text-slate-500 dark:text-slate-400 text-xs font-medium">
+                        <i class="fa-solid fa-filter-circle-xmark text-3xl text-slate-300 dark:text-slate-700 mb-2"></i>
+                        <p class="font-bold text-slate-700 dark:text-slate-300">No hay entregables que coincidan con la búsqueda o filtro</p>
+                        <p class="text-slate-400 dark:text-slate-500 mt-1">Intenta restablecer la búsqueda o quitar el filtro superior.</p>
+                        <button onclick="clearSearch(); setFilter('ALL');" class="mt-3 px-3.5 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900 transition">
                             Mostrar todos los entregables
                         </button>
                     </div>
@@ -889,8 +934,27 @@
                 return;
             }
 
+            // Filter items by active Frente tab if specified
+            let tabFilteredItems = items;
+            if (state.activeFrenteTab !== 'ALL') {
+                tabFilteredItems = items.filter(i => (i.frente || 'Sin Frente') === state.activeFrenteTab);
+            }
+
+            if (tabFilteredItems.length === 0) {
+                container.innerHTML = tabsHtml + `
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 text-center text-slate-500 dark:text-slate-400 text-xs font-medium">
+                        <i class="fa-solid fa-folder-open text-2xl text-slate-300 dark:text-slate-700 mb-2"></i>
+                        <p class="font-bold text-slate-700 dark:text-slate-300">No hay entregables para el frente "${escapeHtml(state.activeFrenteTab)}" con el filtro activo</p>
+                        <button onclick="setFilter('ALL');" class="mt-3 px-3.5 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-lg transition">
+                            Ver todos los estados
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
             const grouped = {};
-            items.forEach(item => {
+            tabFilteredItems.forEach(item => {
                 const f = item.frente || 'Sin Frente';
                 const a = item.area || 'General';
                 if (!grouped[f]) grouped[f] = {};
@@ -898,12 +962,10 @@
                 grouped[f][a].push(item);
             });
 
-            // Ensure "PL - Evolución InterApp" exists in Logístico even if empty
             if (grouped['Logístico'] && !grouped['Logístico']['PL - Evolución InterApp']) {
                 grouped['Logístico']['PL - Evolución InterApp'] = [];
             }
 
-            const customOrder = ["Logístico", "Financiero", "Comercio Electrónico", "Integraciones"];
             const sortedFrentes = Object.keys(grouped).sort((a, b) => {
                 let idxA = customOrder.indexOf(a);
                 let idxB = customOrder.indexOf(b);
@@ -915,14 +977,14 @@
                 return a.localeCompare(b);
             });
 
-            let html = '';
+            let html = tabsHtml;
             for (const frente of sortedFrentes) {
                 const areas = grouped[frente];
                 const totalInFrente = Object.values(areas).reduce((acc, arr) => acc + arr.length, 0);
-                const isExpanded = state.expandedFrentes[frente] === true;
+                const isExpanded = state.expandedFrentes[frente] !== false;
 
                 html += `
-                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-200">
+                    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-200">
                         <div onclick="toggleFrente('${escapeHtml(frente)}')" class="bg-slate-900 px-4 py-3 text-white flex justify-between items-center cursor-pointer hover:bg-slate-800 transition-colors select-none">
                             <h3 class="font-bold text-sm sm:text-base flex items-center gap-2.5">
                                 <i class="fa-solid ${isExpanded ? 'fa-chevron-down' : 'fa-chevron-right'} text-blue-400 text-xs transition-transform duration-200"></i>
@@ -944,48 +1006,47 @@
 
                 for (const [area, itemsInArea] of Object.entries(areas)) {
                     const areaKey = frente + '___' + area;
-                    const isAreaExpanded = state.expandedAreas[areaKey] === true;
+                    const isAreaExpanded = state.expandedAreas[areaKey] !== false;
                     const cleanAreaName = area.replace(/^PL\s*-\s*/i, '');
 
-                    // Calculate area-level breakdown by status
                     const salioCountArea = itemsInArea.filter(i => isSalioStatus(i.saleProd)).length;
                     const noProdCountArea = itemsInArea.filter(i => isNoProdStatus(i.saleProd)).length;
                     const progCountArea = itemsInArea.filter(i => isProgramadoStatus(i.saleProd)).length;
 
                     html += `
-                        <div class="border border-slate-200/80 rounded-lg overflow-hidden bg-slate-50/50">
-                            <div onclick="toggleArea('${escapeHtml(frente)}', '${escapeHtml(area)}')" class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-slate-100/90 hover:bg-slate-200/70 cursor-pointer select-none border-b border-slate-200/60 transition-colors gap-2">
-                                <h4 class="font-bold text-xs text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid ${isAreaExpanded ? 'fa-chevron-down' : 'fa-chevron-right'} text-blue-500 text-[10px] transition-transform duration-200"></i>
-                                    <i class="fa-solid fa-layer-group text-slate-500 text-xs"></i>
+                        <div class="border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-slate-50/50 dark:bg-slate-900/40">
+                            <div onclick="toggleArea('${escapeHtml(frente)}', '${escapeHtml(area)}')" class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-slate-900 text-white hover:bg-slate-800 cursor-pointer select-none border-b border-slate-800 transition-colors gap-2">
+                                <h4 class="font-bold text-xs text-white flex items-center gap-2">
+                                    <i class="fa-solid ${isAreaExpanded ? 'fa-chevron-down' : 'fa-chevron-right'} text-blue-400 text-[10px] transition-transform duration-200"></i>
+                                    <i class="fa-solid fa-layer-group text-blue-400 text-xs"></i>
                                     <span>${escapeHtml(cleanAreaName)}</span>
                                 </h4>
 
                                 <div class="flex items-center gap-1.5 flex-wrap">
                                     ${salioCountArea > 0 ? `
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200/80 flex items-center gap-1" title="Salió a Producción (SI)">
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 flex items-center gap-1">
                                             <i class="fa-solid fa-circle-check text-[9px]"></i> ${salioCountArea} Salió
                                         </span>
                                     ` : ''}
                                     ${noProdCountArea > 0 ? `
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200/80 flex items-center gap-1" title="Vencidos (NO)">
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1">
                                             <i class="fa-solid fa-triangle-exclamation text-[9px]"></i> ${noProdCountArea} Vencidos
                                         </span>
                                     ` : ''}
                                     ${progCountArea > 0 ? `
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200/80 flex items-center gap-1" title="Próximas Salidas (Programado)">
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1">
                                             <i class="fa-solid fa-clock text-[9px]"></i> ${progCountArea} Programado
                                         </span>
                                     ` : ''}
-                                    <span class="text-[10px] font-bold text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs ml-0.5">
+                                    <span class="text-[10px] font-bold text-slate-300 bg-slate-800 border border-slate-700 px-2 py-0.5 rounded shadow-2xs ml-0.5">
                                         ${itemsInArea.length} ítem(s)
                                     </span>
                                 </div>
                             </div>
 
                             ${itemsInArea.length === 0 ? `
-                                <div class="p-4 text-center text-slate-400 text-xs italic ${isAreaExpanded ? '' : 'hidden'}">
-                                    <i class="fa-solid fa-folder-open text-slate-300 mr-1.5"></i> Sin entregables asignados en este área actualmente.
+                                <div class="p-4 text-center text-slate-400 dark:text-slate-500 text-xs italic ${isAreaExpanded ? '' : 'hidden'}">
+                                    <i class="fa-solid fa-folder-open text-slate-300 dark:text-slate-700 mr-1.5"></i> Sin entregables asignados en este área actualmente.
                                 </div>
                             ` : `
                                 <div class="p-3 grid grid-cols-1 md:grid-cols-2 gap-3 ${isAreaExpanded ? '' : 'hidden'}">
@@ -995,52 +1056,52 @@
                     itemsInArea.forEach(item => {
                         const isOverdue = Boolean(item.nuevaFecha);
                         const currentNote = state.commentsStorage[item.id] !== undefined ? state.commentsStorage[item.id] : item.comentarios;
-                        const isItemExpanded = state.expandedItems[item.id] === true;
 
                         const isSalio = isSalioStatus(item.saleProd);
                         const isNo = isNoProdStatus(item.saleProd);
                         const saleBadgeClass = isSalio
-                            ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                            ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800'
                             : isNo 
-                                ? 'bg-rose-50 text-rose-700 border-rose-200' 
-                                : 'bg-amber-50 text-amber-700 border-amber-200';
+                                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800' 
+                                : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+
+                        const statusBorderAccent = isSalio
+                            ? 'border-l-4 border-l-indigo-500'
+                            : isNo
+                                ? 'border-l-4 border-l-rose-500'
+                                : 'border-l-4 border-l-amber-500';
 
                         html += `
-                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-2xs flex flex-col justify-between hover:border-slate-300 transition-all">
+                            <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-md hover:shadow-lg hover:border-slate-400 dark:hover:border-slate-700 transition-all ${statusBorderAccent}">
                                 <div>
                                     <div class="flex justify-between items-center mb-2 gap-2 flex-wrap">
                                         <div class="flex items-center gap-1.5">
-                                            <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded font-mono">#${item.id}</span>
+                                            <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded font-mono shadow-2xs">#${item.id}</span>
                                             ${item.saleProd ? `
                                                 <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${saleBadgeClass}">
                                                     Sale a Prod: ${escapeHtml(item.saleProd)}
                                                 </span>
                                             ` : ''}
                                             ${item.type ? `
-                                                <span class="text-[10px] font-bold px-2 py-0.5 rounded border bg-blue-50 text-blue-700 border-blue-200">
+                                                <span class="text-[10px] font-bold px-2 py-0.5 rounded border bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
                                                     Tipo: ${escapeHtml(item.type)}
                                                 </span>
                                             ` : ''}
                                         </div>
-
-                                        <button onclick="toggleItemDetails('${item.id}')" class="text-xs font-semibold text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-slate-100 px-2 py-1 rounded border border-slate-200 transition flex items-center gap-1.5" title="Mostrar u ocultar fechas y comentarios">
-                                            <span class="text-[10px] uppercase tracking-wide font-bold">Detalles</span>
-                                            <i id="item-icon-${item.id}" class="fa-solid ${isItemExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px]"></i>
-                                        </button>
                                     </div>
 
-                                    <h5 onclick="toggleItemDetails('${item.id}')" class="font-bold text-slate-800 text-xs leading-snug cursor-pointer hover:text-blue-600 transition ${isItemExpanded ? 'mb-3' : 'mb-1'}">${escapeHtml(item.title)}</h5>
+                                    <h5 class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm leading-snug mb-3">${escapeHtml(item.title)}</h5>
                                 </div>
 
-                                <div id="item-details-${item.id}" class="${isItemExpanded ? 'block' : 'hidden'} pt-1">
-                                    <div class="grid grid-cols-2 gap-2 py-2 mb-2 border-t border-b border-slate-100 text-[11px]">
+                                <div id="item-details-${item.id}" class="pt-1">
+                                    <div class="grid grid-cols-2 gap-2 py-2 mb-2 border-t border-b border-slate-100 dark:border-slate-800 text-[11px] bg-slate-50/80 dark:bg-slate-950/60 p-2 rounded-lg">
                                         <div>
-                                            <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Finish Date (Plan)</span>
-                                            <span class="font-semibold text-slate-700 ${isOverdue ? 'line-through text-slate-400 text-[10px]' : ''}">${escapeHtml(item.finishDate || '-')}</span>
+                                            <span class="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Finish Date (Plan)</span>
+                                            <span class="font-semibold text-slate-800 dark:text-slate-200 ${isOverdue ? 'line-through text-slate-400 dark:text-slate-500 text-[10px]' : ''}">${escapeHtml(item.finishDate || '-')}</span>
                                         </div>
                                         <div>
-                                            <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Nueva Fecha ${isOverdue ? '⚠️' : ''}</span>
-                                            <span class="font-bold ${isOverdue ? 'text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200' : 'text-slate-400'}">
+                                            <span class="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Nueva Fecha ${isOverdue ? '⚠️' : ''}</span>
+                                            <span class="font-bold ${isOverdue ? 'text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-700' : 'text-slate-400'}">
                                                 ${escapeHtml(item.nuevaFecha || '')}
                                             </span>
                                         </div>
@@ -1048,13 +1109,13 @@
 
                                     <div class="space-y-1">
                                         <div class="flex items-center justify-between">
-                                            <label class="text-[10px] font-bold text-slate-500 flex items-center gap-1">
-                                                <i class="fa-solid fa-comment-dots text-slate-400"></i> Comentario Especialista:
+                                            <label class="text-[10px] font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                                                <i class="fa-solid fa-comment-dots text-blue-500"></i> Comentario Especialista:
                                             </label>
                                         </div>
                                         <textarea oninput="autoResizeTextarea(this); saveComment('${item.id}', this.value)" 
                                                   placeholder="Escriba observaciones técnicas, mitigación o riesgos..." 
-                                                  class="w-full text-[11px] sm:text-xs leading-relaxed p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 focus:bg-white focus:border-blue-500 outline-none transition overflow-hidden resize-none min-h-[38px] custom-scrollbar">${escapeHtml(currentNote || '')}</textarea>
+                                                  class="w-full text-[11px] sm:text-xs leading-relaxed p-2.5 bg-slate-50 dark:bg-slate-950/90 border border-slate-300 dark:border-slate-800 rounded-lg text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-950 focus:border-blue-500 outline-none transition overflow-hidden resize-none min-h-[38px] custom-scrollbar shadow-2xs">${escapeHtml(currentNote || '')}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -1081,6 +1142,113 @@
             setTimeout(() => {
                 container.querySelectorAll('textarea').forEach(ta => autoResizeTextarea(ta));
             }, 50);
+        }
+
+        function renderAnalyticsCharts() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#f1f5f9' : '#1e293b';
+            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)';
+
+            const salioCount = state.items.filter(i => isSalioStatus(i.saleProd)).length;
+            const prodCount = state.items.filter(i => isProgramadoStatus(i.saleProd)).length;
+            const despCount = state.items.filter(i => isNoProdStatus(i.saleProd)).length;
+
+            // Donut Chart
+            const ctxDonut = document.getElementById('chart-status-donut');
+            if (ctxDonut) {
+                if (chartDonutInstance) chartDonutInstance.destroy();
+                chartDonutInstance = new Chart(ctxDonut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Salió a Producción', 'Próximas Salidas (Programado)', 'Vencidos / No Sale'],
+                        datasets: [{
+                            data: [salioCount, prodCount, despCount],
+                            backgroundColor: ['#6366f1', '#f59e0b', '#f43f5e'],
+                            borderWidth: 2,
+                            borderColor: isDark ? '#0f172a' : '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: textColor, font: { family: 'Inter', size: 11 } }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Frentes Bar Chart
+            const frentes = [...new Set(state.items.map(i => i.frente || 'Sin Frente'))];
+            const salioPerFrente = frentes.map(f => state.items.filter(i => (i.frente || 'Sin Frente') === f && isSalioStatus(i.saleProd)).length);
+            const progPerFrente = frentes.map(f => state.items.filter(i => (i.frente || 'Sin Frente') === f && isProgramadoStatus(i.saleProd)).length);
+            const noPerFrente = frentes.map(f => state.items.filter(i => (i.frente || 'Sin Frente') === f && isNoProdStatus(i.saleProd)).length);
+
+            const ctxBar = document.getElementById('chart-frentes-bar');
+            if (ctxBar) {
+                if (chartBarInstance) chartBarInstance.destroy();
+                chartBarInstance = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: frentes,
+                        datasets: [
+                            { label: 'Salió a Producción', data: salioPerFrente, backgroundColor: '#6366f1' },
+                            { label: 'Programado', data: progPerFrente, backgroundColor: '#f59e0b' },
+                            { label: 'Vencidos / No', data: noPerFrente, backgroundColor: '#f43f5e' }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { stacked: true, ticks: { color: textColor }, grid: { color: gridColor } },
+                            y: { stacked: true, ticks: { color: textColor }, grid: { color: gridColor } }
+                        },
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: textColor, font: { family: 'Inter', size: 11 } } }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderDelayedItemsTable() {
+            const tbody = document.getElementById('delayed-items-tbody');
+            const badge = document.getElementById('delayed-count-badge');
+            if (!tbody) return;
+
+            const delayedItems = state.items.filter(i => isNoProdStatus(i.saleProd) || Boolean(i.nuevaFecha));
+            if (badge) badge.innerText = `${delayedItems.length} ítem(s) en seguimiento especial`;
+
+            if (delayedItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">No hay entregables vencidos o con desvíos registrados.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = delayedItems.map(item => {
+                const note = state.commentsStorage[item.id] !== undefined ? state.commentsStorage[item.id] : item.comentarios;
+                return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                        <td class="p-3 font-mono font-bold text-slate-900 dark:text-white">#${escapeHtml(item.id)}</td>
+                        <td class="p-3 font-medium text-slate-600 dark:text-slate-300">
+                            <span class="block font-bold text-slate-800 dark:text-slate-100">${escapeHtml(item.frente)}</span>
+                            <span class="text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(item.area)}</span>
+                        </td>
+                        <td class="p-3 font-medium text-slate-900 dark:text-slate-100">${escapeHtml(item.title)}</td>
+                        <td class="p-3 text-slate-500 dark:text-slate-400 line-through">${escapeHtml(item.finishDate || '-')}</td>
+                        <td class="p-3 font-bold text-amber-600 dark:text-amber-400">${escapeHtml(item.nuevaFecha || 'N/A')}</td>
+                        <td class="p-3 text-slate-600 dark:text-slate-300 max-w-xs break-words">
+                            <span class="inline-block px-2 py-0.5 mb-1 text-[10px] font-bold rounded bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                                Sale a Prod: ${escapeHtml(item.saleProd)}
+                            </span>
+                            <p class="text-[11px] leading-tight text-slate-500 dark:text-slate-400">${escapeHtml(note || 'Sin motivo registrado')}</p>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function autoResizeTextarea(el) {
@@ -1126,7 +1294,7 @@
 
         function resetToGoogleSheetDefaults() {
             state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
-            collapseAllState();
+            expandAll(true);
             saveData();
             renderDeliverablesBoard();
             closeImportModal();
@@ -1149,7 +1317,7 @@
 
             if (newItems && newItems.length > 0) {
                 state.items = newItems;
-                collapseAllState();
+                expandAll(true);
                 saveData();
                 renderDeliverablesBoard();
                 closeImportModal();

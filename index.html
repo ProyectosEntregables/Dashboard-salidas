@@ -674,6 +674,11 @@
                 ensureDeliverableItem("383897", {
                     type: "CAB", title: "Backend / Integración \"Al carrito\"", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "En revisión de la lista de requisitos apartado de Seguridad de la Información y Calidad"
                 });
+                let item383897 = state.items.find(i => i.id === '383897');
+                if (item383897) {
+                    item383897.comentarios = "En revisión de la lista de requisitos apartado de Seguridad de la Información y Calidad";
+                    state.commentsStorage["383897"] = item383897.comentarios;
+                }
             } catch (e) {
                 state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
             }

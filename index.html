@@ -348,7 +348,7 @@
         const GOOGLE_SHEET_DEFAULT_ITEMS = [
             { id: "381578", type: "", title: "Módulo de Oficinas Principales en Formularios R1", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "5/9/2026", saleProd: "NO", comentarios: "Bloqueos por ajustes de homologación de datos y cobertura de reglas de negocio offline/online; cuenta con informe técnico." },
             { id: "386348", type: "ECAB", title: "Estabilización Funcionalidad de Pago Anticipado", frente: "Logístico", area: "PL - Cambios", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB - Ejecutado con éxito" },
-            { id: "384191", type: "ECAB", title: "Estabilización 3", frente: "Integraciones", area: "PL - Portal Clientes", finishDate: "28/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB, debido a inclusión de ajuste solicitado por don Norman y finalización de pruebas y estrés" },
+            { id: "384191", type: "ECAB", title: "Estabilización 3:Mejora precarga perfil y admin usuario", frente: "Integraciones", area: "PL - Portal Clientes", finishDate: "28/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB, debido a inclusión de ajuste solicitado por don Norman y finalización de pruebas y estrés" },
             { id: "392364", type: "ECAB", title: "Optimización de Ingreso RO, Trazabilidad de Entregas y Control de GEO en Armado de Bloques", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB: Ejecutado" },
             { id: "378456", type: "", title: "Integración Cambios - Interapp", frente: "Logístico", area: "PL - Cambios", finishDate: "30/8/2026", nuevaFecha: "12/9/2026", saleProd: "NO", comentarios: "Reprogramado para pruebas de integración con Interapp" },
             { id: "393042", type: "ECAB", title: "Etiqueta - Devolución a remitente desde Logística Inversa", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "30/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB: Despliegue listo" },
@@ -633,6 +633,9 @@
                 });
 
                 // Ensure key deliverables are consistently present and categorized
+                ensureDeliverableItem("384191", {
+                    type: "ECAB", title: "Estabilización 3:Mejora precarga perfil y admin usuario", frente: "Integraciones", area: "PL - Portal Clientes", finishDate: "28/8/2026", nuevaFecha: "", saleProd: "SI"
+                });
                 ensureDeliverableItem("382614", {
                     type: "ECAB", title: "Reversión de entrega - Interpay", frente: "Financiero", area: "PL - InterPay", finishDate: "22/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05"
                 });

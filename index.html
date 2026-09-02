@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
+        window.tailwind = window.tailwind || {};
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -26,7 +27,7 @@
                     }
                 }
             }
-        }
+        };
     </script>
     
     <style>
@@ -80,7 +81,7 @@
                     </div>
                     <div>
                         <h1 class="text-base sm:text-lg font-bold tracking-tight text-white leading-tight">Control de Entregables & Salidas a Producción</h1>
-                        <p class="text-xs text-slate-400 font-medium">AGOSTO</p>
+                        <p class="text-xs text-slate-400 font-medium">SEPTIEMBRE</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -117,6 +118,9 @@
                 <button onclick="openImportModal()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition whitespace-nowrap border border-slate-700" title="Cargar / Importar Datos">
                     <i class="fa-solid fa-file-import mr-1.5"></i> Importar / Pegar
                 </button>
+                <button onclick="clearAllDeliverables()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-rose-900/50 text-rose-300 hover:bg-rose-800 transition whitespace-nowrap border border-rose-700/80 flex items-center gap-1.5" title="Eliminar todos los entregables del tablero">
+                    <i class="fa-solid fa-trash-can"></i> Vaciar Tablero
+                </button>
                 <button onclick="exportDataCSV()" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-blue-300 hover:bg-slate-700 transition whitespace-nowrap border border-slate-700" title="Descargar CSV con notas actualizadas">
                     <i class="fa-solid fa-file-arrow-down mr-1.5"></i> Exportar CSV
                 </button>
@@ -137,7 +141,7 @@
                     <span class="tracking-wider uppercase group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">ENTREGABLES TOTALES</span>
                     <i class="fa-solid fa-box-archive text-blue-500 text-sm"></i>
                 </div>
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="kpi-total">28</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="kpi-total">0</div>
                 <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium flex items-center justify-between" id="kpi-frentes-sub">
                     <span>100% visibilidad en tablero</span>
                     <span class="text-[10px] text-blue-600 dark:text-blue-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity">Ver todos <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
@@ -154,7 +158,7 @@
                     <i class="fa-solid fa-circle-check text-indigo-500 text-sm"></i>
                 </div>
                 <div class="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-2">
-                    <span id="kpi-salio">17</span> <span class="text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800" id="kpi-salio-pct">61%</span>
+                    <span id="kpi-salio">0</span> <span class="text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800" id="kpi-salio-pct">0%</span>
                 </div>
                 <div class="text-[11px] text-indigo-600 dark:text-indigo-400 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: En produccion</span>
@@ -165,14 +169,14 @@
                 </div>
             </div>
 
-            <!-- Card 3: No Sale a Producción (NO) -->
+            <!-- Card 3: No Sale a Producción (NO / Vencidos) -->
             <div id="kpi-card-NO_PROD" onclick="setFilter('NO_PROD')" class="bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:border-rose-400 hover:shadow-md transition-all select-none group relative">
                 <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-semibold">
                     <span class="tracking-wider uppercase group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">VENCIDOS</span>
                     <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i>
                 </div>
                 <div class="text-2xl sm:text-3xl font-extrabold text-rose-600 dark:text-rose-400 mt-2">
-                    <span id="kpi-desp">6</span> <span class="text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/80 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-800" id="kpi-desp-pct">21%</span>
+                    <span id="kpi-desp">0</span> <span class="text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/80 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-800" id="kpi-desp-pct">0%</span>
                 </div>
                 <div class="text-[11px] text-rose-600 dark:text-rose-400 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: Vencido</span>
@@ -190,7 +194,7 @@
                     <i class="fa-solid fa-clock text-amber-500 text-sm"></i>
                 </div>
                 <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400 mt-2">
-                    <span id="kpi-prod">5</span> <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800" id="kpi-prod-pct">18%</span>
+                    <span id="kpi-prod">0</span> <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800" id="kpi-prod-pct">0%</span>
                 </div>
                 <div class="text-[11px] text-amber-600 dark:text-amber-400 mt-1 font-medium flex items-center justify-between">
                     <span>Estado: Programado</span>
@@ -205,17 +209,35 @@
         <!-- TAB 1: MATRIZ DE ENTREGABLES -->
         <div id="tab-matriz" class="block">
             <div class="bg-white dark:bg-slate-900 p-3.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm mb-6 flex flex-col md:flex-row items-center justify-between gap-3 no-print">
-                <div class="flex items-center gap-2 w-full md:w-auto flex-1 max-w-md">
-                    <div class="relative w-full">
+                <div class="flex items-center gap-2.5 w-full md:w-auto flex-1 max-w-2xl flex-wrap">
+                    <div class="relative w-full sm:w-60">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Buscar por título, ID, frente o área..." class="w-full pl-8 pr-8 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 outline-none transition">
+                        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Buscar por título, ID, área..." class="w-full pl-8 pr-8 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 outline-none transition">
                         <button id="search-clear-btn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
+
+                    <!-- Filtro por Fecha Comprometida Dinámico -->
+                    <div class="flex items-center gap-1.5">
+                        <label for="date-filter-select" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 whitespace-nowrap">
+                            <i class="fa-solid fa-calendar-day text-blue-500"></i> Fecha salida Prod:
+                        </label>
+                        <select id="date-filter-select" onchange="setDateFilter(this.value)" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 px-2 text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:border-blue-500 outline-none transition cursor-pointer font-medium max-w-[200px]">
+                            <option value="ALL">📅 Todas las fechas</option>
+                        </select>
+                        <button id="date-filter-clear-btn" onclick="setDateFilter('ALL')" class="hidden p-1 text-slate-400 hover:text-rose-500 text-xs" title="Quitar filtro de fecha">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
                     <span id="active-filter-indicator" class="hidden ml-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 items-center gap-1.5 whitespace-nowrap">
                         <span id="active-filter-text">Filtro: Todos</span>
                         <button onclick="setFilter('ALL')" class="hover:text-rose-600 dark:hover:text-rose-400 ml-1" title="Quitar filtro"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
+                    <span id="active-date-indicator" class="hidden px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 items-center gap-1.5 whitespace-nowrap">
+                        <span id="active-date-text">Fecha salida Prod: -</span>
+                        <button onclick="setDateFilter('ALL')" class="hover:text-rose-600 dark:hover:text-rose-400 ml-1" title="Quitar fecha"><i class="fa-solid fa-xmark"></i></button>
                     </span>
                 </div>
                 <div class="flex items-center space-x-2 w-full md:w-auto justify-end">
@@ -323,8 +345,21 @@
                 </p>
 
                 <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Pegar Datos (Tabulado de Sheets o CSV)</label>
-                    <textarea id="import-text" rows="7" placeholder="ID	Work Item Type	Title	Frente	Area Path	Finish Date	Nueva Fecha	Comentarios	Estado	Tipo" class="w-full text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 focus:bg-white dark:focus:bg-slate-900 focus:border-emerald-500 outline-none custom-scrollbar text-slate-800 dark:text-slate-100"></textarea>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Cargar Archivo CSV o Pegar Datos</label>
+                    
+                    <!-- File Drag and Drop Zone -->
+                    <div id="drop-zone" 
+                         onclick="document.getElementById('file-input').click()"
+                         ondragover="handleDragOver(event)"
+                         ondrop="handleFileDrop(event)"
+                         class="mb-3 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-xl p-4 text-center bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer transition-all duration-200 group">
+                        <i class="fa-solid fa-file-csv text-2xl text-emerald-500 group-hover:scale-110 transition-transform mb-1 block"></i>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Arrastra tu archivo CSV aquí o haz clic para examinar</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Soporta .csv, .tsv o archivos de texto delimitados por comas o tabuladores</p>
+                        <input type="file" id="file-input" accept=".csv,.tsv,.txt" class="hidden" onchange="handleFileSelect(event)">
+                    </div>
+
+                    <textarea id="import-text" rows="5" placeholder="ID	Work Item Type	Title	Frente	Area Path	Finish Date	Nueva Fecha	Comentarios	Estado	Tipo" class="w-full text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 focus:bg-white dark:focus:bg-slate-900 focus:border-emerald-500 outline-none custom-scrollbar text-slate-800 dark:text-slate-100"></textarea>
                 </div>
 
                 <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 flex-wrap gap-2">
@@ -345,35 +380,423 @@
     <script>
         const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1Xza_09EONAlbuMaQ8EdcwxbD1Q0DdY3bwqPX3iWXGx4/gviz/tq?tqx=out:csv";
         
+        // Helper function to strip time part from date strings (e.g., "19/09/2026 0:00" -> "19/09/2026")
+        function formatDateOnly(dateStr) {
+            if (!dateStr) return '';
+            const trimmed = String(dateStr).trim();
+            if (!trimmed) return '';
+            return trimmed.split(/[\sT]+/)[0] || trimmed;
+        }
+
         const GOOGLE_SHEET_DEFAULT_ITEMS = [
-            { id: "381578", type: "", title: "Módulo de Oficinas Principales en Formularios R1", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "5/9/2026", saleProd: "NO", comentarios: "Bloqueos por ajustes de homologación de datos y cobertura de reglas de negocio offline/online; cuenta con informe técnico." },
-            { id: "386348", type: "ECAB", title: "Estabilización Funcionalidad de Pago Anticipado", frente: "Logístico", area: "PL - Cambios", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB - Ejecutado con éxito" },
-            { id: "384191", type: "ECAB", title: "Estabilización 3:Mejora precarga perfil y admin usuario", frente: "Integraciones", area: "PL - Portal Clientes", finishDate: "28/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB, debido a inclusión de ajuste solicitado por don Norman y finalización de pruebas y estrés" },
-            { id: "392364", type: "ECAB", title: "Optimización de Ingreso RO, Trazabilidad de Entregas y Control de GEO en Armado de Bloques", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "29/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB: Ejecutado" },
-            { id: "378456", type: "", title: "Integración Cambios - Interapp", frente: "Logístico", area: "PL - Cambios", finishDate: "30/8/2026", nuevaFecha: "12/9/2026", saleProd: "NO", comentarios: "Reprogramado para pruebas de integración con Interapp" },
-            { id: "393042", type: "ECAB", title: "Etiqueta - Devolución a remitente desde Logística Inversa", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "30/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "SALIDA POR ECAB: Despliegue listo" },
-            { id: "383897", type: "CAB", title: "Backend / Integración \"Al carrito\"", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "En revisión de la lista de requisitos apartado de Seguridad de la Información y Calidad" },
-            { id: "383901", type: "ECAB", title: "IA", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "383902", type: "ECAB", title: "Link RRSS + Whatsaap", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "383903", type: "CAB", title: "Micro Site", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "390493", type: "ECAB", title: "Migración Redis Cloud", frente: "Integraciones", area: "PL - Integraciones", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "336505", type: "ECAB", title: "Optimización Operativa y Visual de Geo Manual", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "4/7/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
-            { id: "369818", type: "ECAB", title: "Reversión de Entrega - ControllerApp", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "23/08/2026", nuevaFecha: "30/08/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Debido a concurrencia con Mantenimiento" },
-            { id: "196238", type: "CAB", title: "Cierre diario: Reportes anulaciones Dashboard - anulaciones", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "385302", type: "N/A", title: "Cierre diario: Migración VPC - Auditoría de pesos", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "31/8/2026", nuevaFecha: "05/09/2026", saleProd: "NO", comentarios: "Negocio comunicó que la afectación por la ventana solo se puede hacer sabado noche domingo madrugada" },
-            { id: "149607", type: "N/A", title: "Conciliaciones Banco Davivienda", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "21/8/2026", nuevaFecha: "", saleProd: "NO", comentarios: "Desarrollo por parte del equipo desplegado en ambiente de QA. Pendiente concretar mesas técnicas con el banco para pruebas conjuntas." },
-            { id: "337681", type: "CAB", title: "Reporte de movilizados (dentro del parámetro de descuento)", frente: "Financiero", area: "PL - InterPay", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "337682", type: "CAB", title: "Reporte de ventas con descuentos", frente: "Financiero", area: "PL - InterPay", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "382614", type: "ECAB", title: "Reversión de entrega - Interpay", frente: "Financiero", area: "PL - InterPay", finishDate: "22/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05" },
-            { id: "384025", type: "ECAB", title: "Mejoras de Interfaz, Copy \"Sigue Tu Envío\" (Pago Anticipado)", frente: "Logístico", area: "PL - Cambios", finishDate: "19/8/2026", nuevaFecha: "28/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB: Completada" },
-            { id: "358165", type: "ECAB", title: "Mejora Cambios: Centro Acopio WPF y Logística Inversa WPF", frente: "Logístico", area: "PL - Cambios", finishDate: "2/8/2026", nuevaFecha: "30/8/2026", saleProd: "SI", comentarios: "SALIDA POR ECAB" },
-            { id: "383904", type: "N/A", title: "Definiciones de Modelo", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "383905", type: "N/A", title: "Proceso de Pago Seller", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "371364", type: "N/A", title: "Revisión / Actualización Políticas y T&C", frente: "Comercio Electrónico", area: "PL - Comercio Electronico", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: "" },
-            { id: "366686", type: "ECAB", title: "MEJORAS INTERAPP R3", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: "" },
-            { id: "366688", type: "ECAB", title: "MEJORAS INTERAP R4", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: "" },
-            { id: "371706", type: "CAB", title: "Reversion de entrega - Interapp", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "13/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "Bugs encontrados durante la fase de pruebas lo que conllevo tiempo de desarrollo por ende la  reprogramación de la salida producción" },
-            { id: "386555", type: "ECAB", title: "Reembolso por pago en casa  - Full", frente: "Financiero", area: "PL - InterPay", finishDate: "31/08/2026", nuevaFecha: "03/09/2026", saleProd: "NO", comentarios: "Se tenía una dependencia con el proveedor de Novasoft" }
+            {
+                id: "392059",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Cambios",
+                title: "Implementación BUCKET Afectaciones de pago anticipado",
+                finishDate: "19/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "378456",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Cambios",
+                title: "Integración Cambios - Interapp",
+                finishDate: "30/08/2026",
+                nuevaFecha: "12/09/2026",
+                saleProd: "Vencido",
+                comentarios: "Reprogramado para pruebas de integración con Interapp"
+            },
+            {
+                id: "358021",
+                item: "Característica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Cambios",
+                title: "Mejora Cambios: Sigue tu envío y geomanual",
+                finishDate: "09/08/2026",
+                nuevaFecha: "05/09/2026",
+                saleProd: "Vencido",
+                comentarios: "El inicio de pruebas se retrasó debido a la saturación y errores de concurrencia por otros proyectos. El equipo técnico retomó la preparación el 31 de agosto (ambientación en Apitesting), siendo solucionado los fallos iniciales para realizar las pruebas."
+            },
+            {
+                id: "371706",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Evolución InterApp",
+                title: "Reversion de entrega - Interapp",
+                finishDate: "13/08/2026",
+                nuevaFecha: "2/09/2026",
+                saleProd: "Vencido",
+                comentarios: "Bugs encontrados durante la fase de pruebas lo que conllevo tiempo de desarrollo por ende la reprogramación de la salida producción"
+            },
+            {
+                id: "179813",
+                item: "Característica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Evolución InterApp",
+                title: "Logístico y Financiero – Integración Proyecto Cambios",
+                finishDate: "12/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "387335",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Evolución InterApp",
+                title: "Mejoras Financieras - Conciliaciones",
+                finishDate: "4/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "378787",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Evolución InterApp",
+                title: "Migración Capa Media",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "378788",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Evolución InterApp",
+                title: "Verificación de identidad(Integración Truora)",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "378789",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Evolución InterApp",
+                title: "Multientregas",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "395851",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Operación logística",
+                title: "Novedades en Bloques, Controller-YAAP y Explorador",
+                finishDate: "2/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "392356",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Operación logística",
+                title: "Ajuste de Tiempos en Reclamo en Oficina (RO)",
+                finishDate: "12/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "392372",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Operación logística",
+                title: "Job de Reintentos de Reversiones Fallidas y Copia de Imágenes PDE Pendientes",
+                finishDate: "05/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "381578",
+                item: "Caracteristica",
+                type: "",
+                frente: "Logístico",
+                area: "PL - Operación logística",
+                title: "Módulo de Oficinas Principales en Formularios R1",
+                finishDate: "29/08/2026",
+                nuevaFecha: "5/09/2026",
+                saleProd: "Vencido",
+                comentarios: "Bloqueos por ajustes de homologación de datos y cobertura de reglas de negocio offline/online; cuenta con informe técnico."
+            },
+            {
+                id: "383897",
+                item: "Caracteristica",
+                type: "",
+                frente: "Comercio electrónico",
+                area: "PL - Dropshipping",
+                title: 'Backend / Integración "Al carrito"',
+                finishDate: "31/08/2026",
+                nuevaFecha: "2/09/2026",
+                saleProd: "Vencido",
+                comentarios: "En revisión de la lista de requisitos apartado de Seguridad de la Información y Calidad"
+            },
+            {
+                id: "321587",
+                item: "Entregable",
+                type: "",
+                frente: "Comercio electrónico",
+                area: "PL - Comercio Electronico",
+                title: "Informe de compras - escenarios planteados",
+                finishDate: "23/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "370809",
+                item: "Caracteristica",
+                type: "",
+                frente: "Comercio electrónico",
+                area: "PL - Comercio Electronico",
+                title: "Actualización Seller Center 3.0",
+                finishDate: "25/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "371368",
+                item: "Entregable",
+                type: "",
+                frente: "Comercio electrónico",
+                area: "PL - Comercio Electronico",
+                title: "Informes medios digitales 3",
+                finishDate: "25/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "371360",
+                item: "Entregable",
+                type: "",
+                frente: "Comercio electrónico",
+                area: "PL - Comercio Electronico",
+                title: "Obtención Habilitación Operador Postal - Komprech SAS",
+                finishDate: "30/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "371361",
+                item: "Entregable",
+                type: "",
+                frente: "Comercio electrónico",
+                area: "PL - Comercio Electronico",
+                title: "Atender visita y responder requerimientos generados por DIAN - INTER RAPIDÍSIMO SA",
+                finishDate: "30/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "382614",
+                item: "Caracteristica",
+                type: "",
+                frente: "Financiero",
+                area: "PL - InterPay",
+                title: "Reversión de entrega - Interpay",
+                finishDate: "22/08/2026",
+                nuevaFecha: "2/09/2026",
+                saleProd: "Vencido",
+                comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05"
+            },
+            {
+                id: "386555",
+                item: "Caracteristica",
+                type: "",
+                frente: "Financiero",
+                area: "PL - InterPay",
+                title: "Reembolso por pago en casa - Full",
+                finishDate: "31/08/2026",
+                nuevaFecha: "3/09/2026",
+                saleProd: "Vencido",
+                comentarios: "Se tenía una dependencia con el proveedor de Novasoft"
+            },
+            {
+                id: "384976",
+                item: "Caracteristica",
+                type: "",
+                frente: "Financiero",
+                area: "PL - InterPay",
+                title: "Ajustes Interpay - Pago en Casa",
+                finishDate: "2/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "385302",
+                item: "Caracteristica",
+                type: "",
+                frente: "Financiero",
+                area: "PL - Mejoras Financieras",
+                title: "Cierre diario: Migración VPC - Auditoría de pesos",
+                finishDate: "31/08/2026",
+                nuevaFecha: "5/09/2026",
+                saleProd: "Vencido",
+                comentarios: "Negocio comunicó que la afectación por la ventana solo se puede hacer sabado noche domingo madrugada"
+            },
+            {
+                id: "149607",
+                item: "Caracteristica",
+                type: "",
+                frente: "Financiero",
+                area: "PL - Mejoras Financieras",
+                title: "Conciliaciones Banco Davivienda",
+                finishDate: "21/08/2026",
+                nuevaFecha: "",
+                saleProd: "Vencido",
+                comentarios: "Desarrollo por parte del equipo desplegado en ambiente de QA. Pendiente concretar mesas técnicas con el banco para pruebas conjuntas."
+            },
+            {
+                id: "383277",
+                item: "Entregable",
+                type: "",
+                frente: "Financiero",
+                area: "PL - Mejoras Financieras",
+                title: "Migración Novasoft V 6.0.1",
+                finishDate: "30/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "387407",
+                item: "Característica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Integraciones",
+                title: "Soporte y Estabilización Pre envios Portal 2",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "388121",
+                item: "Característica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Integraciones",
+                title: "Notificación Push guia 3000",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "388127",
+                item: "Característica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Integraciones",
+                title: "Optimización Api Cotizador",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "388143",
+                item: "Característica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Integraciones",
+                title: "Optimización Api Errores",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "390501",
+                item: "Característica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Integraciones",
+                title: "Migración de captcha a Altcha Link de redes sociales y Pagina WEB (cotizador)",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "388131",
+                item: "Característica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Integraciones",
+                title: "Optimización Api Impresión",
+                finishDate: "30/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "388142",
+                item: "Característica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Integraciones",
+                title: "Optimización Estado Guia y Resumen Operativo",
+                finishDate: "30/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "396218",
+                item: "Característica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Portal Clientes",
+                title: "Cambio de reCAPTCHA a Altcha",
+                finishDate: "4/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            },
+            {
+                id: "392198",
+                item: "Caracteristica",
+                type: "",
+                frente: "Integraciones",
+                area: "PL - Portal Clientes",
+                title: "Estabilización 5: Optimización y mejora de Micro frontends Home, direcciones, contactos y notificaciones.",
+                finishDate: "18/09/2026",
+                nuevaFecha: "",
+                saleProd: "Programado",
+                comentarios: ""
+            }
         ];
 
         let state = {
@@ -383,7 +806,8 @@
             expandedAreas: {},
             expandedItems: {},
             activeFilter: 'ALL', // 'ALL' | 'SALIO' | 'PROD' | 'NO_PROD'
-            activeFrenteTab: 'ALL', // 'ALL' or specific Frente name
+            activeDateFilter: 'ALL', // 'ALL' | 'DD/MM/YYYY'
+            activeFrenteTab: '', // Specific Frente name (defaults to first available)
             activeTab: 'matriz',
             searchQuery: ''
         };
@@ -454,7 +878,7 @@
         function isNoProdStatus(saleProdStr) {
             if (!saleProdStr) return false;
             const s = String(saleProdStr).toUpperCase().trim();
-            return s === 'NO' || s.includes('DESPRIORIZADO') || s.includes('CANCELADO') || s.includes('DETENIDO');
+            return s === 'NO' || s.includes('DESPRIORIZADO') || s.includes('CANCELADO') || s.includes('DETENIDO') || s.includes('VENCIDO');
         }
 
         function isProgramadoStatus(saleProdStr) {
@@ -565,8 +989,97 @@
             const area = (item.area || '').toLowerCase();
             const comment = (state.commentsStorage[item.id] || item.comentarios || '').toLowerCase();
             const type = (item.type || '').toLowerCase();
+            const itemField = (item.item || '').toLowerCase();
 
-            return title.includes(q) || id.includes(q) || frente.includes(q) || area.includes(q) || comment.includes(q) || type.includes(q);
+            return title.includes(q) || id.includes(q) || frente.includes(q) || area.includes(q) || comment.includes(q) || type.includes(q) || itemField.includes(q);
+        }
+
+        function normalizeDateStr(dateStr) {
+            if (!dateStr) return '';
+            let cleaned = formatDateOnly(dateStr).trim();
+            if (!cleaned) return '';
+            if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(cleaned)) {
+                const parts = cleaned.split('-');
+                return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+            }
+            if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(cleaned)) {
+                const parts = cleaned.split('/');
+                return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
+            }
+            return cleaned;
+        }
+
+        function getItemCommittedDate(item) {
+            return normalizeDateStr(item.nuevaFecha || item.finishDate);
+        }
+
+        function parseDateForSort(dStr) {
+            const norm = normalizeDateStr(dStr);
+            if (!norm) return 0;
+            const parts = norm.split('/');
+            if (parts.length === 3) {
+                return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime() || 0;
+            }
+            return 0;
+        }
+
+        function populateDateFilterOptions() {
+            const selectEl = document.getElementById('date-filter-select');
+            if (!selectEl) return;
+
+            const dateCounts = {};
+            state.items.forEach(item => {
+                const committedDate = getItemCommittedDate(item);
+                if (committedDate) {
+                    dateCounts[committedDate] = (dateCounts[committedDate] || 0) + 1;
+                }
+            });
+
+            const uniqueDates = Object.keys(dateCounts).sort((a, b) => parseDateForSort(a) - parseDateForSort(b));
+
+            let optionsHtml = `<option value="ALL">📅 Todas las fechas (${state.items.length})</option>`;
+            uniqueDates.forEach(date => {
+                const count = dateCounts[date];
+                optionsHtml += `<option value="${date}">${date} (${count} ítem${count > 1 ? 's' : ''})</option>`;
+            });
+
+            selectEl.innerHTML = optionsHtml;
+            if (state.activeDateFilter && (state.activeDateFilter === 'ALL' || uniqueDates.includes(state.activeDateFilter))) {
+                selectEl.value = state.activeDateFilter;
+            } else {
+                state.activeDateFilter = 'ALL';
+                selectEl.value = 'ALL';
+            }
+            updateDateFilterVisuals();
+        }
+
+        function setDateFilter(dateVal) {
+            state.activeDateFilter = dateVal || 'ALL';
+            const selectEl = document.getElementById('date-filter-select');
+            if (selectEl) selectEl.value = state.activeDateFilter;
+            updateDateFilterVisuals();
+            renderDeliverablesBoard();
+        }
+
+        function updateDateFilterVisuals() {
+            const clearBtn = document.getElementById('date-filter-clear-btn');
+            const dateBadge = document.getElementById('active-date-indicator');
+            const dateBadgeText = document.getElementById('active-date-text');
+
+            if (state.activeDateFilter && state.activeDateFilter !== 'ALL') {
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                if (dateBadge && dateBadgeText) {
+                    dateBadge.classList.remove('hidden');
+                    dateBadge.classList.add('inline-flex');
+                    dateBadgeText.innerText = `Fecha salida Prod: ${state.activeDateFilter}`;
+                }
+            } else {
+                if (clearBtn) clearBtn.classList.add('hidden');
+                if (dateBadge) {
+                    dateBadge.classList.add('hidden');
+                    dateBadge.classList.remove('inline-flex');
+                }
+            }
         }
 
         function toggleFrente(frenteName) {
@@ -602,7 +1115,6 @@
         }
 
         function initApp() {
-            // Restore theme preference
             const savedTheme = localStorage.getItem('pmo_theme');
             if (savedTheme === 'dark') {
                 document.documentElement.classList.remove('light');
@@ -610,105 +1122,67 @@
             }
 
             try {
-                const storedNotes = localStorage.getItem('pmo_specialist_notes_v31');
+                const storedNotes = localStorage.getItem('pmo_specialist_notes_v50');
                 if (storedNotes) state.commentsStorage = JSON.parse(storedNotes);
+            } catch (e) {}
 
-                const storedItems = localStorage.getItem('pmo_items_dataset_v31');
+            try {
+                const storedItems = localStorage.getItem('pmo_items_dataset_v50');
                 if (storedItems) {
-                    state.items = JSON.parse(storedItems);
-                } else {
-                    state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
-                }
-                
-                // Exclude specific legacy IDs and Services Agile area
-                state.items = state.items.filter(i => i.id !== '359755' && i.id !== '390316' && i.id !== '383277' && !(i.area && i.area.toLowerCase().includes('servicios ágiles')));
-
-                // Standardize deployed items status and ECAB types
-                const siIds = ['386348', '384191', '392364', '393042', '390493', '336505', '369818', '384025', '358165', '366686', '366688', '383901', '383902', '383903', '337681', '337682', '196238', '383904', '383905', '371364'];
-                siIds.forEach(id => {
-                    let item = state.items.find(i => i.id === id);
-                    if (item) {
-                        item.saleProd = "SI";
+                    const parsed = JSON.parse(storedItems);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        state.items = parsed.filter(i => !i.area.toLowerCase().includes('control t'));
+                    } else {
+                        state.items = JSON.parse(JSON.stringify(GOOGLE_SHEET_DEFAULT_ITEMS));
                     }
-                });
-
-                // Ensure key deliverables are consistently present and categorized
-                ensureDeliverableItem("384191", {
-                    type: "ECAB", title: "Estabilización 3:Mejora precarga perfil y admin usuario", frente: "Integraciones", area: "PL - Portal Clientes", finishDate: "28/8/2026", nuevaFecha: "", saleProd: "SI"
-                });
-                ensureDeliverableItem("382614", {
-                    type: "ECAB", title: "Reversión de entrega - Interpay", frente: "Financiero", area: "PL - InterPay", finishDate: "22/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "Se vio la necesidad presentar la lista de requisitos independiente de acuerdo al nuevo formato del documento 05"
-                });
-                ensureDeliverableItem("196238", {
-                    type: "CAB", title: "Cierre diario: Reportes anulaciones Dashboard - anulaciones", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: ""
-                });
-                ensureDeliverableItem("337681", {
-                    type: "CAB", title: "Reporte de movilizados (dentro del parámetro de descuento)", frente: "Financiero", area: "PL - InterPay", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: ""
-                });
-                ensureDeliverableItem("337682", {
-                    type: "CAB", title: "Reporte de ventas con descuentos", frente: "Financiero", area: "PL - InterPay", finishDate: "31/8/2026", nuevaFecha: "", saleProd: "SI", comentarios: ""
-                });
-                ensureDeliverableItem("366686", {
-                    type: "ECAB", title: "MEJORAS INTERAPP R3", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: ""
-                });
-                ensureDeliverableItem("366688", {
-                    type: "ECAB", title: "MEJORAS INTERAP R4", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "22/07/2026", nuevaFecha: "29/08/2026", saleProd: "SI", comentarios: ""
-                });
-                ensureDeliverableItem("371706", {
-                    type: "CAB", title: "Reversion de entrega - Interapp", frente: "Logístico", area: "PL - Evolución InterApp", finishDate: "13/08/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "Bugs encontrados durante la fase de pruebas lo que conllevo tiempo de desarrollo por ende la  reprogramación de la salida producción"
-                });
-                let item371706 = state.items.find(i => i.id === '371706');
-                if (item371706) {
-                    item371706.comentarios = "Bugs encontrados durante la fase de pruebas lo que conllevo tiempo de desarrollo por ende la  reprogramación de la salida producción";
-                    state.commentsStorage["371706"] = item371706.comentarios;
-                }
-                ensureDeliverableItem("369818", {
-                    type: "ECAB", title: "Reversión de Entrega - ControllerApp", frente: "Logístico", area: "PL - Mejoras logísticas", finishDate: "23/08/2026", nuevaFecha: "30/08/2026", saleProd: "SI", comentarios: ""
-                });
-                ensureDeliverableItem("385302", {
-                    type: "N/A", title: "Cierre diario: Migración VPC - Auditoría de pesos", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "31/8/2026", nuevaFecha: "05/09/2026", saleProd: "NO", comentarios: "Negocio comunicó que la afectación por la ventana solo se puede hacer sabado noche domingo madrugada"
-                });
-                ensureDeliverableItem("149607", {
-                    type: "N/A", title: "Conciliaciones Banco Davivienda", frente: "Financiero", area: "PL - Mejoras Financieras", finishDate: "21/8/2026", nuevaFecha: "", saleProd: "NO", comentarios: "Desarrollo por parte del equipo desplegado en ambiente de QA. Pendiente concretar mesas técnicas con el banco para pruebas conjuntas."
-                });
-                ensureDeliverableItem("386555", {
-                    type: "ECAB", title: "Reembolso por pago en casa  - Full", frente: "Financiero", area: "PL - InterPay", finishDate: "31/08/2026", nuevaFecha: "03/09/2026", saleProd: "NO", comentarios: "Se tenía una dependencia con el proveedor de Novasoft"
-                });
-                ensureDeliverableItem("383897", {
-                    type: "CAB", title: "Backend / Integración \"Al carrito\"", frente: "Comercio Electrónico", area: "PL - Dropshipping", finishDate: "31/8/2026", nuevaFecha: "02/09/2026", saleProd: "NO", comentarios: "En revisión de la lista de requisitos apartado de Seguridad de la Información y Calidad"
-                });
-                let item383897 = state.items.find(i => i.id === '383897');
-                if (item383897) {
-                    item383897.comentarios = "En revisión de la lista de requisitos apartado de Seguridad de la Información y Calidad";
-                    state.commentsStorage["383897"] = item383897.comentarios;
+                } else {
+                    state.items = JSON.parse(JSON.stringify(GOOGLE_SHEET_DEFAULT_ITEMS));
                 }
             } catch (e) {
-                state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
+                state.items = JSON.parse(JSON.stringify(GOOGLE_SHEET_DEFAULT_ITEMS));
             }
 
-            // Expand all frentes, areas, and item details by default
+            // Ensure newly added default items exist in state even if previously cached
+            GOOGLE_SHEET_DEFAULT_ITEMS.forEach(defaultItem => {
+                if (!state.items.some(existing => String(existing.id) === String(defaultItem.id))) {
+                    state.items.push(JSON.parse(JSON.stringify(defaultItem)));
+                }
+            });
+
+            // Ensure removed items like 382585, 396045, 180002, 180576, 180577 are filtered out from stored state
+            const excludedIds = ['382585', '396045', '180002', '180576', '180577', '100155', '359755', '390316'];
+            state.items = state.items.filter(i => !excludedIds.includes(String(i.id)));
+
+            // Ensure date fields are formatted without time and migrate area names
+            state.items.forEach(item => {
+                if (item.area && item.area.toLowerCase().includes('mejoras log')) {
+                    item.area = 'PL - Operación logística';
+                }
+                if (item.finishDate) item.finishDate = formatDateOnly(item.finishDate);
+                if (item.nuevaFecha) item.nuevaFecha = formatDateOnly(item.nuevaFecha);
+                if (item.comentarios && state.commentsStorage[item.id] === undefined) {
+                    state.commentsStorage[item.id] = item.comentarios;
+                }
+            });
+
             expandAll(true);
             saveData();
             updateKPIs();
             updateFilterVisuals();
+            populateDateFilterOptions();
             renderDeliverablesBoard();
-
-            syncWithGoogleSheet(true);
         }
 
-        function ensureDeliverableItem(id, defaults) {
-            let item = state.items.find(i => i.id === id);
-            if (!item) {
-                state.items.push({ id, ...defaults });
-            } else {
-                Object.keys(defaults).forEach(key => {
-                    if (key === 'comentarios') {
-                        item[key] = item[key] || defaults[key];
-                    } else {
-                        item[key] = defaults[key];
-                    }
-                });
+        function clearAllDeliverables() {
+            state.items = [];
+            saveData();
+            populateDateFilterOptions();
+            renderDeliverablesBoard();
+            if (state.activeTab === 'analytics') {
+                renderAnalyticsCharts();
+                renderDelayedItemsTable();
             }
+            showToast("Se han eliminado todos los entregables");
         }
 
         function updateKPIs() {
@@ -733,8 +1207,8 @@
         }
 
         function saveData() {
-            localStorage.setItem('pmo_items_dataset_v31', JSON.stringify(state.items));
-            localStorage.setItem('pmo_specialist_notes_v31', JSON.stringify(state.commentsStorage));
+            localStorage.setItem('pmo_items_dataset_v50', JSON.stringify(state.items));
+            localStorage.setItem('pmo_specialist_notes_v50', JSON.stringify(state.commentsStorage));
             updateKPIs();
         }
 
@@ -749,94 +1223,180 @@
                 
                 const parsed = parseCSV(csvData);
                 if (parsed && parsed.length > 0) {
-                    state.items = parsed.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
+                    state.items = parsed;
                     expandAll(true);
                     saveData();
+                    populateDateFilterOptions();
                     renderDeliverablesBoard();
                     if (state.activeTab === 'analytics') {
                         renderAnalyticsCharts();
                         renderDelayedItemsTable();
                     }
-                    if (!silent) showToast(`Sincronizados ${state.items.length} entregables desde Google Sheets`);
+                    if (!silent) showToast(`Sincronizados ${state.items.length} entregables`);
                 } else {
                     throw new Error("Formato inválido");
                 }
             } catch (err) {
+                state.items = GOOGLE_SHEET_DEFAULT_ITEMS;
+                expandAll(true);
+                saveData();
+                populateDateFilterOptions();
+                renderDeliverablesBoard();
                 if (!silent) {
-                    state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
-                    expandAll(true);
-                    saveData();
-                    renderDeliverablesBoard();
-                    showToast("Datos cargados desde el resguardo local");
+                    showToast("Restaurados datos locales completos del tablero");
                 }
             } finally {
                 if (icon) icon.classList.remove('fa-spin');
             }
         }
 
+        function parseCSVLine(line, delimiter) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === delimiter && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            return result;
+        }
+
         function parseCSV(rawText) {
-            const lines = rawText.split(/\r?\n/).filter(line => line.trim().length > 0);
-            if (lines.length < 2) return null;
+            if (!rawText) return null;
 
-            let delimiter = '\t';
-            if (lines[0].includes('\t')) delimiter = '\t';
-            else if (lines[0].includes(';')) delimiter = ';';
-            else if (lines[0].includes(',')) delimiter = ',';
+            const lines = [];
+            let curLine = '';
+            let inQuotes = false;
 
-            const headers = lines[0].split(delimiter).map(h => h.trim().toLowerCase().replace(/"/g, ''));
+            for (let i = 0; i < rawText.length; i++) {
+                const char = rawText[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                    curLine += char;
+                } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                    if (char === '\r' && rawText[i + 1] === '\n') i++;
+                    if (curLine.trim().length > 0) lines.push(curLine);
+                    curLine = '';
+                } else {
+                    curLine += char;
+                }
+            }
+            if (curLine.trim().length > 0) lines.push(curLine);
+
+            if (lines.length < 1) return null;
+
+            const headerLine = lines[0];
+            let delimiter = ',';
+            if (headerLine.includes('\t')) delimiter = '\t';
+            else if (headerLine.includes(';') && (headerLine.split(';').length > headerLine.split(',').length)) delimiter = ';';
+            else if (headerLine.includes(',')) delimiter = ',';
+
+            const rawHeaders = parseCSVLine(headerLine, delimiter);
+            const headers = rawHeaders.map(h => h.trim().toLowerCase().replace(/^"|"$/g, ''));
             
-            const idxId = headers.findIndex(h => h.includes('id'));
-            const idxFrente = headers.findIndex(h => h.includes('frente'));
-            const idxArea = headers.findIndex(h => h.includes('area') || h.includes('path'));
-            const idxTitle = headers.findIndex(h => h.includes('title') || h.includes('titulo') || h.includes('título'));
-            const idxFinish = headers.findIndex(h => h.includes('finish') || h.includes('fecha') || h.includes('fin'));
-            const idxNuevaFecha = headers.findIndex(h => h.includes('nueva') || h.includes('reprogramada'));
-            const idxComments = headers.findIndex(h => h.includes('comentario') || h.includes('observacion') || h.includes('nota'));
+            const findCol = (terms) => headers.findIndex(h => terms.some(t => h.includes(t)));
 
-            let idxProd = 8;
-            if (headers.length > 8 && (headers[8].includes('sale') || headers[8].includes('prod'))) {
-                idxProd = 8;
-            } else {
-                const foundProd = headers.findIndex(h => h === 'sale a produccion' || h === 'sale a producción' || h === 'sale a prod');
-                if (foundProd !== -1) idxProd = foundProd;
-            }
+            const idxId = findCol(['id', 'codigo', 'código']);
+            const idxItem = findCol(['work item', 'item type', 'tipo elemento', 'elemento', 'item']);
+            const idxFrente = findCol(['frente', 'frente de negocio']);
+            const idxArea = findCol(['area', 'área', 'path']);
+            const idxTitle = findCol(['title', 'titulo', 'título', 'entregable', 'nombre']);
+            const idxFinish = findCol(['finish', 'fecha plan', 'fecha fin', 'fecha']);
+            const idxNuevaFecha = findCol(['nueva', 'reprogramada', 'nueva fecha']);
+            const idxComments = findCol(['comentario', 'observacion', 'observación', 'nota', 'comentarios']);
 
-            let idxType = 9;
-            if (headers.length > 9) {
-                idxType = 9;
-            } else {
-                const foundType = headers.findIndex(h => h === 'tipo' || h.includes('columna 10') || h.includes('col 10'));
-                if (foundType !== -1) idxType = foundType;
-            }
+            let idxProd = findCol(['sale', 'prod', 'estado', 'produccion', 'producción', 'status']);
+            if (idxProd === -1 && headers.length > 8) idxProd = 8;
+
+            let idxType = findCol(['tipo', 'ecab', 'cab', 'modalidad']);
+            if (idxType === -1 && headers.length > 9) idxType = 9;
+
+            const hasHeader = idxId !== -1 || idxTitle !== -1 || idxFrente !== -1;
+            const startLineIndex = hasHeader ? 1 : 0;
 
             const items = [];
-            for (let i = 1; i < lines.length; i++) {
-                const cols = lines[i].split(delimiter).map(c => c.trim().replace(/^"|"$/g, ''));
+            for (let i = startLineIndex; i < lines.length; i++) {
+                const cols = parseCSVLine(lines[i], delimiter).map(c => c.trim().replace(/^"|"$/g, ''));
                 if (cols.length < 2) continue;
 
-                let saleProdVal = (cols[idxProd] !== undefined) ? cols[idxProd] : '';
-                let typeVal = (cols[idxType] !== undefined && cols[idxType] !== '') ? cols[idxType] : (cols[9] || '');
+                let itemId = (idxId !== -1 && cols[idxId]) ? cols[idxId] : (cols[0] || String(Date.now() + i));
+                let itemVal = (idxItem !== -1 && cols[idxItem]) ? cols[idxItem] : (cols[1] || 'Característica');
+                let itemFrente = (idxFrente !== -1 && cols[idxFrente]) ? cols[idxFrente] : (cols[3] || 'Frente General');
+                let itemArea = (idxArea !== -1 && cols[idxArea]) ? cols[idxArea] : (cols[4] || 'PL - General');
+                let itemTitle = (idxTitle !== -1 && cols[idxTitle]) ? cols[idxTitle] : (cols[2] || 'Entregable sin título');
+                let finishVal = formatDateOnly((idxFinish !== -1 && cols[idxFinish]) ? cols[idxFinish] : (cols[5] || ''));
+                let nuevaFechaVal = formatDateOnly((idxNuevaFecha !== -1 && cols[idxNuevaFecha]) ? cols[idxNuevaFecha] : (cols[6] || ''));
+                let commentsVal = (idxComments !== -1 && cols[idxComments]) ? cols[idxComments] : (cols[7] || '');
+                let saleProdVal = (idxProd !== -1 && cols[idxProd] !== undefined) ? cols[idxProd] : (cols[8] || 'Programado');
+                let typeVal = (idxType !== -1 && cols[idxType] !== undefined) ? cols[idxType] : (cols[9] || 'N/A');
 
-                const itemFrente = (idxFrente !== -1 && cols[idxFrente]) ? cols[idxFrente] : 'Frente General';
-                const itemArea = (idxArea !== -1 && cols[idxArea]) ? cols[idxArea] : 'PL - General';
-                const itemId = (idxId !== -1 && cols[idxId]) ? cols[idxId] : String(Date.now() + i);
+                if (itemArea.toLowerCase().includes('mejoras log')) {
+                    itemArea = 'PL - Operación logística';
+                }
 
+                const excludedImportIds = ['359755', '390316', '382585', '396045', '180002', '180576', '180577', '100155'];
                 if (itemFrente.toLowerCase().includes('transversal')) continue;
-                if (itemId === '359755' || itemId === '390316' || itemId === '383277' || itemArea.toLowerCase().includes('servicios ágiles')) continue;
+                if (excludedImportIds.includes(String(itemId)) || itemArea.toLowerCase().includes('servicios ágiles') || itemArea.toLowerCase().includes('control t')) continue;
 
                 items.push({
                     id: itemId,
+                    item: itemVal,
                     type: typeVal,
                     frente: itemFrente,
                     area: itemArea,
-                    title: (idxTitle !== -1 && cols[idxTitle]) ? cols[idxTitle] : cols[0] || 'Entregable',
-                    finishDate: (idxFinish !== -1 && cols[idxFinish]) ? cols[idxFinish] : '',
-                    nuevaFecha: (idxNuevaFecha !== -1 && cols[idxNuevaFecha]) ? cols[idxNuevaFecha] : '',
+                    title: itemTitle,
+                    finishDate: finishVal,
+                    nuevaFecha: nuevaFechaVal,
                     saleProd: saleProdVal,
-                    comentarios: (idxComments !== -1 && cols[idxComments]) ? cols[idxComments] : ''
+                    comentarios: commentsVal
                 });
             }
             return items;
+        }
+
+        function handleFileSelect(evt) {
+            const file = evt.target.files[0];
+            if (file) {
+                readFileContent(file);
+            }
+        }
+
+        function handleDragOver(evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            evt.dataTransfer.dropEffect = 'copy';
+        }
+
+        function handleFileDrop(evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            const files = evt.dataTransfer.files;
+            if (files && files.length > 0) {
+                readFileContent(files[0]);
+            }
+        }
+
+        function readFileContent(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                document.getElementById('import-text').value = content;
+                showToast(`Archivo "${file.name}" cargado exitosamente`);
+            };
+            reader.readAsText(file);
         }
 
         function exportDataCSV() {
@@ -853,8 +1413,8 @@
                     `"${(i.frente || '').replace(/"/g, '""')}"`,
                     `"${(i.area || '').replace(/"/g, '""')}"`,
                     `"${(i.title || '').replace(/"/g, '""')}"`,
-                    `"${(i.finishDate || '').replace(/"/g, '""')}"`,
-                    `"${(i.nuevaFecha || '').replace(/"/g, '""')}"`,
+                    `"${(formatDateOnly(i.finishDate) || '').replace(/"/g, '""')}"`,
+                    `"${(formatDateOnly(i.nuevaFecha) || '').replace(/"/g, '""')}"`,
                     `"${(getDisplayStatus(i.saleProd) || '').replace(/"/g, '""')}"`,
                     `"${(i.type || '').replace(/"/g, '""')}"`,
                     `"${(comment || '').replace(/"/g, '""')}"`
@@ -886,6 +1446,10 @@
                 items = items.filter(i => isNoProdStatus(i.saleProd));
             }
 
+            if (state.activeDateFilter && state.activeDateFilter !== 'ALL') {
+                items = items.filter(i => getItemCommittedDate(i) === state.activeDateFilter);
+            }
+
             if (state.searchQuery) {
                 items = items.filter(i => matchesSearch(i));
             }
@@ -902,12 +1466,13 @@
                 return a.localeCompare(b);
             });
 
-            // Ensure activeFrenteTab defaults to the first available frente if set to 'ALL' or invalid
-            if ((state.activeFrenteTab === 'ALL' || !allFrentesInItems.includes(state.activeFrenteTab)) && allFrentesInItems.length > 0) {
-                state.activeFrenteTab = allFrentesInItems[0];
+            if (!state.activeFrenteTab || state.activeFrenteTab === 'ALL' || !allFrentesInItems.includes(state.activeFrenteTab)) {
+                if (allFrentesInItems.length > 0) {
+                    state.activeFrenteTab = allFrentesInItems[0];
+                }
             }
 
-            // Build Horizontal Frente Tabs Bar with Non-Animated Scroll Indicator
+            // Build Horizontal Frente Tabs Bar
             let tabsHtml = `
                 <div class="mb-5 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <div class="flex items-center justify-between gap-2 mb-3">
@@ -916,8 +1481,8 @@
                             <span>Frentes de Negocio</span>
                         </div>
                         <div class="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 shrink-0">
-                            <i class="fa-solid fa-arrows-left-right text-blue-500 text-[10px]"></i>
-                            <span>Desliza horizontalmente</span>
+                            <i class="fa-solid fa-filter text-blue-500 text-[10px]"></i>
+                            <span>Filtrar por frente</span>
                         </div>
                     </div>
                     
@@ -955,11 +1520,8 @@
                 return;
             }
 
-            // Filter items by active Frente tab if specified
-            let tabFilteredItems = items;
-            if (state.activeFrenteTab !== 'ALL') {
-                tabFilteredItems = items.filter(i => (i.frente || 'Sin Frente') === state.activeFrenteTab);
-            }
+            // Filter items by active Frente tab
+            let tabFilteredItems = items.filter(i => (i.frente || 'Sin Frente') === state.activeFrenteTab);
 
             if (tabFilteredItems.length === 0) {
                 container.innerHTML = tabsHtml + `
@@ -982,10 +1544,6 @@
                 if (!grouped[f][a]) grouped[f][a] = [];
                 grouped[f][a].push(item);
             });
-
-            if (grouped['Logístico'] && !grouped['Logístico']['PL - Evolución InterApp']) {
-                grouped['Logístico']['PL - Evolución InterApp'] = [];
-            }
 
             const sortedFrentes = Object.keys(grouped).sort((a, b) => {
                 let idxA = customOrder.indexOf(a);
@@ -1075,7 +1633,9 @@
                     `;
 
                     itemsInArea.forEach(item => {
-                        const isOverdue = Boolean(item.nuevaFecha);
+                        const formattedFinish = formatDateOnly(item.finishDate);
+                        const formattedNueva = formatDateOnly(item.nuevaFecha);
+                        const isOverdue = Boolean(formattedNueva);
                         const currentNote = state.commentsStorage[item.id] !== undefined ? state.commentsStorage[item.id] : item.comentarios;
 
                         const isSalio = isSalioStatus(item.saleProd);
@@ -1097,7 +1657,7 @@
                                 <div>
                                     <div class="flex justify-between items-center mb-2 gap-2 flex-wrap">
                                         <div class="flex items-center gap-1.5">
-                                            <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded font-mono shadow-2xs">#${item.id}</span>
+                                            <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded font-mono shadow-2xs">#${escapeHtml(item.id)}${item.item ? ' - ' + escapeHtml(item.item) : ''}</span>
                                             ${item.saleProd ? `
                                                 <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${saleBadgeClass}">
                                                     Estado: ${escapeHtml(getDisplayStatus(item.saleProd))}
@@ -1118,12 +1678,12 @@
                                     <div class="grid grid-cols-2 gap-2 py-2 mb-2 border-t border-b border-slate-100 dark:border-slate-800 text-[11px] bg-slate-50/80 dark:bg-slate-950/60 p-2 rounded-lg">
                                         <div>
                                             <span class="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Finish Date (Plan)</span>
-                                            <span class="font-semibold text-slate-800 dark:text-slate-200 ${isOverdue ? 'line-through text-slate-400 dark:text-slate-500 text-[10px]' : ''}">${escapeHtml(item.finishDate || '-')}</span>
+                                            <span class="font-semibold text-slate-800 dark:text-slate-200 ${isOverdue ? 'line-through text-slate-400 dark:text-slate-500 text-[10px]' : ''}">${escapeHtml(formattedFinish || '-')}</span>
                                         </div>
                                         <div>
                                             <span class="text-slate-500 dark:text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Nueva Fecha ${isOverdue ? '⚠️' : ''}</span>
                                             <span class="font-bold ${isOverdue ? 'text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-700' : 'text-slate-400'}">
-                                                ${escapeHtml(item.nuevaFecha || '')}
+                                                ${escapeHtml(formattedNueva || '')}
                                             </span>
                                         </div>
                                     </div>
@@ -1251,6 +1811,8 @@
 
             tbody.innerHTML = delayedItems.map(item => {
                 const note = state.commentsStorage[item.id] !== undefined ? state.commentsStorage[item.id] : item.comentarios;
+                const formattedFinish = formatDateOnly(item.finishDate);
+                const formattedNueva = formatDateOnly(item.nuevaFecha);
                 return `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                         <td class="p-3 font-mono font-bold text-slate-900 dark:text-white">#${escapeHtml(item.id)}</td>
@@ -1259,8 +1821,8 @@
                             <span class="text-[10px] text-slate-400 dark:text-slate-500">${escapeHtml(item.area)}</span>
                         </td>
                         <td class="p-3 font-medium text-slate-900 dark:text-slate-100">${escapeHtml(item.title)}</td>
-                        <td class="p-3 text-slate-500 dark:text-slate-400 line-through">${escapeHtml(item.finishDate || '-')}</td>
-                        <td class="p-3 font-bold text-amber-600 dark:text-amber-400">${escapeHtml(item.nuevaFecha || 'N/A')}</td>
+                        <td class="p-3 text-slate-500 dark:text-slate-400 line-through">${escapeHtml(formattedFinish || '-')}</td>
+                        <td class="p-3 font-bold text-amber-600 dark:text-amber-400">${escapeHtml(formattedNueva || 'N/A')}</td>
                         <td class="p-3 text-slate-600 dark:text-slate-300 max-w-xs break-words">
                             <span class="inline-block px-2 py-0.5 mb-1 text-[10px] font-bold rounded bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
                                 Estado: ${escapeHtml(getDisplayStatus(item.saleProd))}
@@ -1314,12 +1876,13 @@
         }
 
         function resetToGoogleSheetDefaults() {
-            state.items = GOOGLE_SHEET_DEFAULT_ITEMS.filter(i => !(i.frente && i.frente.toLowerCase().includes('transversal')));
+            state.items = GOOGLE_SHEET_DEFAULT_ITEMS;
             expandAll(true);
             saveData();
+            populateDateFilterOptions();
             renderDeliverablesBoard();
             closeImportModal();
-            showToast("Restaurados datos originales del Google Sheet");
+            showToast("Restaurado el listado completo de entregables");
         }
 
         function openImportModal() {
@@ -1340,6 +1903,7 @@
                 state.items = newItems;
                 expandAll(true);
                 saveData();
+                populateDateFilterOptions();
                 renderDeliverablesBoard();
                 closeImportModal();
                 showToast(`Cargados exitosamente ${newItems.length} entregables`);
@@ -1357,10 +1921,18 @@
             document.querySelectorAll('textarea').forEach(ta => autoResizeTextarea(ta));
         });
 
-        // Initialize application on page load
-        window.onload = function() {
+        function startDashboard() {
+            if (window.pmoInitialized) return;
+            window.pmoInitialized = true;
             initApp();
-        };
+        }
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(startDashboard, 10);
+        } else {
+            document.addEventListener('DOMContentLoaded', startDashboard);
+            window.addEventListener('load', startDashboard);
+        }
     </script>
 </body>
 </html>
